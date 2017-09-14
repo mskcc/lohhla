@@ -49,24 +49,6 @@ print(opt)
 # Command line arguments #
 ##########################
 
-# cmdArgs         <- commandArgs(trailingOnly = TRUE);
-# full.patient    <- cmdArgs[1]
-# normalBAMfile   <- cmdArgs[3]
-# BAMDir          <- cmdArgs[4]
-# hlaPath         <- cmdArgs[5]
-# HLAfastaLoc     <- cmdArgs[6]
-# CopyNumLoc      <- cmdArgs[7]
-# mapping.step    <- as.logical(cmdArgs[8])
-# cleanUp         <- as.logical(cmdArgs[9])
-# overrideDir     <- cmdArgs[10]
-
-# minCoverageFilter       <- 30
-# GATKDir     <- '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/'
-# NOVODir     <- "/camp/apps/eb/software/novoalign/3.07.00/bin/"
-# HLAexonLoc  <- '/camp/lab/swantonc/working/rosentr/data/IMGT/hla.dat'
-# numMisMatch <- 1
-
-
 full.patient      <- opt$patientId
 workDir           <- opt$outputDir
 normalBAMfile     <- opt$normalBAMfile
