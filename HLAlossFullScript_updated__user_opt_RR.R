@@ -4,6 +4,7 @@
 # ml R/3.3.1-foss-2016b-bioc-3.3-libX11-1.6.3
 # ml novoalign/3.07.00
 # ml TracerX-Picard-GATK/0.1-Java-1.7.0_80
+# ml Jellyfish/2.2.6-foss-2016b
 
 library(optparse)
 option_list = list(
@@ -23,20 +24,26 @@ option_list = list(
               help="location to patient purity and ploidy output\n\t\tcan be FALSE to only estimate allelic imbalance", metavar="character"),
   make_option(c("-ov", "--overrideDir"), type="character", default='FALSE', 
               help="location of flagstat information if already run [default= %default]", metavar="character"),
-  make_option(c("-mc", "--minCoverageFilter"), type="numeric", default=30, 
+  make_option(c("-mc", "--minCoverageFilter"), type="numeric", default=30,
               help="minimum coverage at mismatch site [default= %default]", metavar="character"),
+  make_option(c("-kmer", "--kmerSize"), type="numeric", default=50, 
+              help="size of kmers to fish with [default= %default]", metavar="character"),
   make_option(c("-mm", "--numMisMatch"), type="numeric", default=1, 
               help="number of mismatches allowed in read to map to HLA allele [default= %default]", metavar="character"),
   make_option(c("-m", "--mappingStep"), type="logical", default=TRUE, 
               help="does mapping to HLA alleles need to be done [default= %default]", metavar="character"),
+  make_option(c("-f", "--fishingStep"), type="logical", default=TRUE, 
+              help="if mapping is performed, also look for fished reads matching kmers of size kmerSize [default= %default]", metavar="character"),
   make_option(c("-cu", "--cleanUp"), type="logical", default=TRUE, 
               help="remove temporary files [default= %default]", metavar="character"),
   make_option(c("-no", "--novoDir"), type="character", default='', 
               help="path to novoalign executable [default= %default]", metavar="character"),
-  make_option(c("-ga", "--gatkDIR"), type="character", default='', 
+  make_option(c("-ga", "--gatkDir"), type="character", default='', 
               help="path to GATK executable [default= %default]", metavar="character"),
-  make_option(c("-ex", "--HLAexonLoc"), type="character", default='', 
-              help="HLA exon boundaries for plotting [default= %default]", metavar="character")
+  make_option(c("-ex", "--HLAexonLoc"), type="character", default='/camp/lab/swantonc/working/rosentr/data/IMGT/hla.dat', 
+              help="HLA exon boundaries for plotting [default= %default]", metavar="character"),
+  make_option(c("-w", "--ignoreWarnings"), type="logical", default=TRUE, 
+              help="continue running with warnings [default= %default]", metavar="character")
 )
 
 
@@ -62,8 +69,11 @@ numMisMatch       <- opt$numMisMatch
 mapping.step      <- opt$mappingStep
 cleanUp           <- opt$cleanUp
 NOVODir           <- opt$novoDir
-GATKDir           <- opt$gatkDIR
+GATKDir           <- opt$gatkDir
 HLAexonLoc        <- opt$HLAexonLoc
+kmerSize          <- opt$kmerSize
+fishing.step      <- opt$fishingStep
+ignoreWarnings    <- opt$ignoreWarnings
 
 if (is.null(opt$BAMDir) | is.null(opt$outputDir) | is.null(opt$hlaPath) | is.null(opt$HLAfastaLoc)){
   print_help(opt_parser)
@@ -92,48 +102,14 @@ require(Rsamtools, quietly = TRUE)
 interactive           <- FALSE
 if(interactive)
 {
-  full.patient          <- "L_LTX050"
-  workDir               <- "/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/tx100-noPoly/L_LTX050/exome/NeoAntigen/LOH/"
-  hlaPath               <- '/camp/lab/swantonc/working/rosentr/projects/neoantigen/tx100/samples-20160818/LTX050/LTX050.polysolver/winners.hla.txt'
-  normalBAMfile         <- '/farm/tracerx/lung/release_002.2/L_LTX050/exome/BAM/processed/L_LTX050_BS_GL.bam'
-  BAMDir                <- '/farm/tracerx/lung/release_002.2/L_LTX050/exome/BAM/processed/'
-  HLAfastaLoc           <- "/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta"
-  mapping.step          <- TRUE
-  cleanUp               <- FALSE
-  CopyNumLoc            <- '/farm/tracerx/lung/release_002.2/L_LTX050/exome/ASCAT/solutions.txt'
-  overrideDir           <- '/farm/tracerx/lung/release/L_LTX050/exome/QC/flagstat/'
+  opt<-parse_args(opt_parser,c('--patientId', 'B_MET014', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly-fished-optitype/B_MET014//exome/NeoAntigen/LOH/', '--normalBAMfile', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET014/exome/BAM/processed/B_MET014_GL.bam', '--BAMDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET014/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly-fished-optitype/B_MET014/optitype.hlas.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET014/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET014/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
 
-  full.patient          <- "U_LTX156"
-  workDir               <- "/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/tx100-noPoly/U_LTX156/exome/NeoAntigen/LOH/"
-  hlaPath               <- '/camp/lab/swantonc/working/rosentr/projects/neoantigen/tx100/samples-20160818/LTX156/LTX156.polysolver/winners.hla.txt'
-  normalBAMfile         <- '/farm/tracerx/lung/release_002.2/U_LTX156/exome/BAM/processed/U_LTX156_BS_GL.bam'
-  BAMDir                <- '/farm/tracerx/lung/release_002.2/U_LTX156/exome/BAM/processed/'
-  HLAfastaLoc           <- "/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta"
-  mapping.step          <- TRUE
-  cleanUp               <- FALSE
-  CopyNumLoc            <- '/farm/tracerx/lung/release_002.2/U_LTX156/exome/ASCAT/solutions.txt'
-  overrideDir           <- '/farm/tracerx/lung/release/U_LTX156/exome/QC/flagstat/'
-
-  full.patient          <- "D_LMS021"
-  workDir               <- "/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Rizvi-noPoly/D_LMS021//exome/NeoAntigen/LOH/"
-  hlaPath               <- '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Rizvi/LMS021/exome/NeoAntigen/Polysolver/winners.hla.txt'
-  normalBAMfile         <- '/farm/tracerx/lung/LMS/lms_280715/D_LMS021/exome/BAM/processed/D_LMS021_GL.bam'
-  BAMDir                <- '/farm/tracerx/lung/LMS/lms_280715/D_LMS021/exome/BAM/processed/'
-  HLAfastaLoc           <- "/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta"
-  mapping.step          <- TRUE
-  cleanUp               <- FALSE
-  CopyNumLoc            <- '/farm/tracerx/lung/LMS/lms_280715/D_LMS021/exome/ASCAT/solutions.txt'
-  overrideDir           <- '/farm/tracerx/lung/LMS/lms_280715/D_LMS021/exome/QC/flagstat/'
-
-  full.patient          <- "A_LTX049"
-  workDir               <- "/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/tx100-noPoly/A_LTX049/rna/NeoAntigen/LOH/"
-  hlaPath               <- '/camp/lab/swantonc/working/rosentr/projects/neoantigen/tx100/samples-20160818/LTX049/LTX049.polysolver/winners.hla.txt'
-  normalBAMfile         <- 'FALSE'
-  BAMDir                <- '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/tx100-noPoly/A_LTX049/rna/BAM/'
-  HLAfastaLoc           <- "/camp/lab/swantonc/working/rosentr/data/IMGT/hla_abc_complete.rna.fasta"
-  mapping.step          <- TRUE
-  cleanUp               <- FALSE
-  CopyNumLoc            <- 'FALSE'
+  opt<-parse_args(opt_parser,c('--patientId', 'B_MET002', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly-fished/B_MET002//exome/NeoAntigen/LOH/', '--normalBAMfile', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET002/exome/BAM/processed/B_MET002_GL.bam', '--BAMDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET002/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly/B_MET002/exome/NeoAntigen/Polysolver/winners.hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET002/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET002/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
+  opt<-parse_args(opt_parser,c('--patientId', 'B_MET081', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly-fished/B_MET081//exome/NeoAntigen/LOH/', '--normalBAMfile', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET081/exome/BAM/processed/B_MET081_GL.bam', '--BAMDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET081/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly/B_MET081/exome/NeoAntigen/Polysolver/winners.hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET081/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET081/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
+  opt<-parse_args(opt_parser,c('--patientId', 'B_LTX038', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/B_LTX038//exome/NeoAntigen/LOH/', '--normalBAMfile', '/farm/tracerx/lung/release_002.2/B_LTX038/exome/BAM/processed/B_LTX038_BS_GL.bam', '--BAMDir', '/farm/tracerx/lung/release_002.2/B_LTX038/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/B_LTX038/new_hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/farm/tracerx/lung/release_002.2/B_LTX038/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/farm/tracerx/lung/release_002.2/B_LTX038/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
+  opt<-parse_args(opt_parser,c('--patientId', 'L_LTX110', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/L_LTX110//exome/NeoAntigen/LOH/', '--normalBAMfile', '/farm/tracerx/lung/release_002.2/L_LTX110/exome/BAM/processed/L_LTX110_BS_GL.bam', '--BAMDir', '/farm/tracerx/lung/release_002.2/L_LTX110/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/L_LTX110/new_hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/farm/tracerx/lung/release_002.2/L_LTX110/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/farm/tracerx/lung/release_002.2/L_LTX110/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
+  opt<-parse_args(opt_parser,c('--patientId', 'R_LTX145', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/R_LTX145//exome/NeoAntigen/LOH/', '--normalBAMfile', '/farm/tracerx/lung/release_002.2/R_LTX145/exome/BAM/processed/R_LTX145_BS_GL.bam', '--BAMDir', '/farm/tracerx/lung/release_002.2/R_LTX145/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/R_LTX145/new_hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/farm/tracerx/lung/release_002.2/R_LTX145/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/farm/tracerx/lung/release_002.2/R_LTX145/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
+  
 }
 
 print(full.patient)
@@ -165,6 +141,11 @@ override <-  ifelse(overrideDir == FALSE, yes = FALSE, no = TRUE)
 gamma                   <- 1
 binSize                 <- 150
 
+if(ignoreWarnings){
+  howToWarn <- warning
+} else{
+  howToWarn <- stop
+}
 
 #############
 # functions #
@@ -203,6 +184,65 @@ PasteVector <- function(v,sep=""){
   out.v <- sub(" , NA , "," , ",out.v);
   return(out.v);
   
+}
+
+create.kmer.file <- function(workDir, kmerSize, HLAfastaLoc){
+
+  setwd(workDir)
+  cmd <- paste('jellyfish count -m ', kmerSize, ' -s 100M -t 5 ', HLAfastaLoc, sep = '')
+  system(cmd)
+  cmd <- paste('jellyfish dump mer_counts.jf > mer_counts_dumps.fa', sep = '')
+  system(cmd)
+  cmd <- paste('grep --invert-match \\> mer_counts_dumps.fa > ', kmerSize, 'mer_uniq', sep = '')
+  system(cmd)
+  system('rm mer_counts.jf')
+  system('rm mer_counts_dumps.fa')
+
+}
+
+get.partially.matching.reads <- function(workDir, regionDir, BAMDir, BAMfile){
+
+  kmerFile <- paste(workDir, kmerSize, 'mer_uniq', sep = '')
+
+  # add header
+  cmd <- paste('samtools view -H ', BAMDir, BAMfile, ' > ', regionDir, '/fished.sam', sep = '')
+  system(cmd)
+
+  # fish partially matching reads
+  cmd <- paste('samtools view ', BAMDir, BAMfile, ' | grep -F -f ', kmerFile, ' >> ', regionDir, '/fished.sam', sep = '')
+  system(cmd)
+
+  # convert to fastq
+  cmd <- paste('java -jar ', GATKDir, '/SamToFastq.jar I=', regionDir, '/fished.sam F=', regionDir, '/fished.1.fastq F2=', regionDir, '/fished.2.fastq VALIDATION_STRINGENCY=SILENT', sep = '')
+  system(cmd)
+
+}
+
+combine.fastqs <- function(chr6.f1, chr6.f2, fished.f1, fished.f2){
+
+  chr6.f1.seq <- read.table(chr6.f1, sep = '\t', stringsAsFactors = FALSE, comment.char = '', quote = '')
+  chr6.f2.seq <- read.table(chr6.f2, sep = '\t', stringsAsFactors = FALSE, comment.char = '', quote = '')
+  fished.f1.seq <- read.table(fished.f1, sep = '\t', stringsAsFactors = FALSE, comment.char = '', quote = '')
+  fished.f2.seq <- read.table(fished.f2, sep = '\t', stringsAsFactors = FALSE, comment.char = '', quote = '')
+  fished.f1.names <- fished.f1.seq[seq(1, nrow(fished.f1.seq), by = 4),]
+  fished.f2.names <- fished.f2.seq[seq(1, nrow(fished.f2.seq), by = 4),]
+  fished.f1.names.nodup <- fished.f1.names[-which(fished.f1.names %in% chr6.f1.seq$V1)]
+  fished.f2.names.nodup <- fished.f2.names[-which(fished.f2.names %in% chr6.f2.seq$V1)]
+  fished.f1.seq.toadd <- lapply(which(fished.f1.seq$V1 %in% fished.f1.names.nodup), FUN = function(x){
+    return(fished.f1.seq[x:(x+3),])
+    })
+  fished.f1.seq.toadd <- unlist(fished.f1.seq.toadd)
+  fished.f2.seq.toadd <- lapply(which(fished.f2.seq$V1 %in% fished.f2.names.nodup), FUN = function(x){
+    return(fished.f2.seq[x:(x+3),])
+    })
+  fished.f2.seq.toadd <- unlist(fished.f2.seq.toadd)
+
+  new.chr6.f1.seq <- c(chr6.f1.seq$V1, fished.f1.seq.toadd)
+  new.chr6.f2.seq <- c(chr6.f2.seq$V1, fished.f2.seq.toadd)
+
+  write.table(new.chr6.f1.seq, file = chr6.f1, sep = '\t', quote = FALSE, row.names = FALSE, col.names = FALSE)
+  write.table(new.chr6.f2.seq, file = chr6.f2, sep = '\t', quote = FALSE, row.names = FALSE, col.names = FALSE)
+
 }
 
 count.events <- function(BAMfile, n){
@@ -393,8 +433,7 @@ t.test.NA <- function(x){
   }
 }
 
-print('got here')
-print(workDir)
+
 #############################
 # create output directories # 
 #############################
@@ -423,13 +462,20 @@ BAMfiles  <- list.files(BAMDir, pattern = '.bam$')
 regions   <- sapply(BAMfiles, FUN =function(x) {return(unlist(strsplit(x, split = '.bam'))[1])})
 
 hlaAlleles <- read.table(hlaPath, sep = '\t', header = FALSE, as.is = TRUE)
-hlaAlleles <- unique(sort(c(hlaAlleles$V2, hlaAlleles$V3)))
+if(ncol(hlaAlleles) == 3){
+  hlaAlleles <- unique(sort(c(hlaAlleles$V2, hlaAlleles$V3)))
+} else {
+    if(ncol(hlaAlleles) == 1){
+    hlaAlleles <- unique(sort(hlaAlleles$V1))
+  }
+}
 
 hlaFasta   <- read.fasta(HLAfastaLoc)
 
 if(!all(hlaAlleles %in% names(hlaFasta))) {
   warning(paste('Missing HLAs from FASTA: ', paste(hlaAlleles[-which(hlaAlleles %in% names(hlaFasta))], collapse = ', '), '\nTrying to find alternative.', sep = ''))
-  missing <- hlaAlleles[-which(hlaAlleles %in% names(hlaFasta))]
+  if(length(which(hlaAlleles %in% names(hlaFasta))) == 0 ) {  missing <- hlaAlleles } 
+  if(length(which(hlaAlleles %in% names(hlaFasta))) != 0 ) {  missing <- hlaAlleles[-which(hlaAlleles %in% names(hlaFasta))] } 
   for(i in missing){
     alt <- grep(pattern = i, x = names(hlaFasta), value = TRUE)[1]
     if(!is.na(alt)){
@@ -474,6 +520,11 @@ if(mapping.step){
   write.table(novoindexCMD, file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
   system(novoindexCMD)
 
+  if(fishing.step){
+    write.table(paste('\ncreate kmer file at ', date(), '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+    create.kmer.file(workDir, kmerSize, HLAfastaLoc)
+  }
+
   for(BAMfile in BAMfiles){
     
     BAMid <- unlist(strsplit(BAMfile, split = '.bam'))[1]
@@ -492,7 +543,8 @@ if(mapping.step){
     
     #extract HLA possible reads from BAM file
     write.table(paste('\nextract HLA possible reads from BAM file at ', date(), '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
-    
+
+    # chr 6 and contigs
     samtoolsCMD <- paste("samtools view -H ", BAMDir, '/', BAMfile, " > " , regionDir,"/",BAMid,".chr6region.sam",sep="")
     write.table(samtoolsCMD, file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
     system(samtoolsCMD)
@@ -509,14 +561,20 @@ if(mapping.step){
     write.table(samtoolsCMD, file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
     system(samtoolsCMD)
 
+    # mapped reads
     # samtoolsCMD <- paste("samtools view -F 4 ",BAMDir, '/', BAMfile, ' >> ', regionDir, '/', BAMid, ".chr6region.sam ", sep = "")
     # write.table(paste(samtoolsCMD, '\n', sep = ''), file = log.name, row.names=FALSE, col.names=FALSE, quote=FALSE, append = TRUE)
     # system(samtoolsCMD)
 
-    samtoolsCMD <- paste("samtools view -f 4 ",BAMDir, '/', BAMfile, ' >> ', regionDir, '/', BAMid, ".chr6region.sam ", sep = "")
-    write.table(paste(samtoolsCMD, '\n', sep = ''), file = log.name, row.names=FALSE, col.names=FALSE, quote=FALSE, append = TRUE)
-    system(samtoolsCMD)
+    # unmapped reads
+    # samtoolsCMD <- paste("samtools view -f 4 ",BAMDir, '/', BAMfile, ' >> ', regionDir, '/', BAMid, ".chr6region.sam ", sep = "")
+    # write.table(paste(samtoolsCMD, '\n', sep = ''), file = log.name, row.names=FALSE, col.names=FALSE, quote=FALSE, append = TRUE)
+    # system(samtoolsCMD)
     
+    samtoolsCMD <- paste("samtools view ", BAMDir, '/', BAMfile, " chr6_apd_hap1 >> ",regionDir,"/",BAMid,".chr6region.sam",sep="")
+    write.table(samtoolsCMD, file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+    system(samtoolsCMD)
+
     samtoolsCMD <- paste("samtools view ", BAMDir, '/', BAMfile, " chr6_cox_hap2 >> ",regionDir,"/",BAMid,".chr6region.sam",sep="")
     write.table(samtoolsCMD, file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
     system(samtoolsCMD)
@@ -546,6 +604,19 @@ if(mapping.step){
     samToFastQ <- paste("java -jar ",GATKDir,"/SamToFastq.jar ","I=",regionDir,"/",BAMid,".chr6region.sam"," F=",regionDir,"/",BAMid,".chr6region.1.fastq"," F2=",regionDir,"/",BAMid,".chr6region.2.fastq"," VALIDATION_STRINGENCY=SILENT",sep="")
     write.table(samToFastQ, file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
     system(samToFastQ)
+
+    # fished reads
+    if(fishing.step){
+      write.table(paste('\nget partially matching reads and turn fished sam into fastq at ', date(), '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+      get.partially.matching.reads(workDir, regionDir, BAMDir, BAMfile)
+      write.table(paste('\ncombine chr6 reads with fished reads at ', date(), '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+      chr6.f1   <- paste(regionDir,"/",BAMid,".chr6region.1.fastq", sep = '')
+      chr6.f2   <- paste(regionDir,"/",BAMid,".chr6region.2.fastq", sep = '')
+      fished.f1 <- paste(regionDir,"/fished.1.fastq", sep = '')
+      fished.f2 <- paste(regionDir,"/fished.2.fastq", sep = '')
+      combine.fastqs(chr6.f1, chr6.f2, fished.f1, fished.f2)
+    }
+
     
     # align to all HLA alleles
     write.table(paste('\nalign to all HLA alleles at ', date(), '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)  
@@ -660,16 +731,14 @@ if(runWithNormal){
     regionUniqMappedRegions <- getUniqMapReads(workDir = workDir, BAMDir = BAMDir, override = FALSE)
   }
   if(override){
-   #regionUniqMappedRegions <- getUniqMapReads(workDir = workDir, BAMDir = BAMDir, override = TRUE, overrideDir = paste('/farm/tracerx/lung/release/', full.patient, '/exome/QC/flagstat/', sep = '')) 
     regionUniqMappedRegions <- getUniqMapReads(workDir = workDir, BAMDir = BAMDir, override = TRUE, overrideDir = overrideDir) 
   }
 
+  # this will need to change if normal BAM doesn't have GL in name
   GermLineUniqMappedReads <- regionUniqMappedRegions[[grep("GL",names(regionUniqMappedRegions),value=TRUE)]]
 
 }
 
-
-print(regionUniqMappedRegions)
 
 
 ####################################
@@ -682,9 +751,10 @@ normalName <- regions[which(paste(BAMDir, regions, '.bam', sep = '') == normalBA
 # next, we can look at each mpileupFile, and assess whether we see differences in coverage between the two. 
 # let's look at a region of interest. 
 PatientOutPut <- c()
+
 for (region in regions)
 {
- 
+
   if(paste(BAMDir, region, '.bam', sep = '') == normalBAMfile){
     next
   }
@@ -702,6 +772,7 @@ for (region in regions)
   
   print(region)
   HLAoutPut <- c()
+  pdf(paste(figureDir,region,".minCoverage_",minCoverageFilter,".HLA.pdf",sep=""),width=10,height=6)
   
   for (HLA_gene in c('hla_a','hla_b','hla_c'))
   {
@@ -733,6 +804,11 @@ for (region in regions)
       missMatchPositions <- getMisMatchPositionsPairwiseAlignment(tmp,returnlist=TRUE)
       if(length(missMatchPositions$diffSeq1) == 0){
         next
+      }
+      if(length(missMatchPositions$diffSeq1) < 5){
+        msg <- 'HLA alleles are very similar (fewer than 5 mismatch positions)! Keep that in mind when considering results.'
+        write.table(paste('\n', msg, '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+        warning(msg)
       }
       
     }
@@ -790,9 +866,6 @@ for (region in regions)
       
       #apply minimum coverage thresholds (we only apply this to the normal for now)
       HLA_A_type1normal <- HLA_A_type1normal[HLA_A_type1normal$V4>minCoverageFilter,,drop=FALSE]
-      if(nrow(HLA_A_type1normal) == 0){
-        print('No position has greater than minimum coverage filter')
-      }
       
       tmp <- intersect(rownames(HLA_A_type1tumor),rownames(HLA_A_type1normal))
       HLA_A_type1tumor  <- HLA_A_type1tumor[tmp,,drop=FALSE]
@@ -825,7 +898,7 @@ for (region in regions)
       
       #apply minimum coverage thresholds (we only apply this to the normal for now)
       HLA_A_type2normal <- HLA_A_type2normal[HLA_A_type2normal$V4>minCoverageFilter,,drop=FALSE]
-      
+
       tmp <- intersect(rownames(HLA_A_type2tumor),rownames(HLA_A_type2normal))
       HLA_A_type2tumor  <- HLA_A_type2tumor[tmp,,drop=FALSE]
       # HLA_A_type2normal <- HLA_A_type2normal[tmp,,drop=FALSE]
@@ -839,6 +912,30 @@ for (region in regions)
       
     }
 
+    # catch issues with HLA coverage
+    HLA_type1_ok <- length(names(HLA_A_type1normalCov)[names(HLA_A_type1normalCov)%in%missMatchPositions$diffSeq1])
+    HLA_type2_ok <- length(names(HLA_A_type2normalCov)[names(HLA_A_type2normalCov)%in%missMatchPositions$diffSeq2])
+    if(nrow(HLA_A_type1normal) == 0 | nrow(HLA_A_type2normal) == 0){
+      msg <- paste('No position has greater than minimum coverage filter for ', HLA_gene, sep = '')
+      write.table(paste('\n', msg, '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+      next
+    }
+    if(HLA_type1_ok == 0 | HLA_type2_ok == 0){
+      msg <- paste('No mismatch position has greater than minimum coverage filter for ', HLA_gene, sep = '')
+      write.table(paste('\n', msg, '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+      next
+    }
+    if(HLA_type1_ok / HLA_type2_ok < 0.05){
+      msg <- paste('Check that the HLA type is correct for ', HLA_A_type1, '!', sep = '')
+      write.table(paste('\n', msg, '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+      howToWarn(msg)
+    }
+    if(HLA_type2_ok / HLA_type1_ok < 0.05){
+      msg <- paste('Check that the HLA type is correct for ', HLA_A_type2, '!', sep = '')
+      write.table(paste('\n', msg, '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+      howToWarn(msg)
+    }
+    
 
     
     if(extractNONmismatchReads%in%TRUE)
@@ -1013,8 +1110,6 @@ for (region in regions)
     
     #plotting
     {
-      pdf(paste(figureDir,region,".minCoverage_",minCoverageFilter,".HLA.pdf",sep=""),width=10,height=6)
-
       if(runWithNormal){
         # rolling mean
         par(mfrow=c(2,1))
@@ -1228,7 +1323,7 @@ for (region in regions)
         startChar <- min(c(as.numeric(names(HLA_A_type1tumorCov))),as.numeric(names(HLA_A_type2tumorCov)))
         endChar   <- max(c(as.numeric(names(HLA_A_type1tumorCov))),as.numeric(names(HLA_A_type2tumorCov)))
         seqToConsider <- seq(startChar,endChar,by=binSize)
-        seqToConsider <- c(seqToConsider[-length(seqToConsider)],endChar)
+        seqToConsider <- c(seqToConsider[-length(seqToConsider)],endChar+1)
         
         binLogR       <- c()
         for (i in 1:(length(seqToConsider)-1))
@@ -1268,11 +1363,9 @@ for (region in regions)
         
         for(duplicationIn2 in dup2)
         {
-          
           tmpOut[tmpOut[,4]==duplicationIn2,'TumorCov_type1']  <- mean(tmpOut[tmpOut[,4]==duplicationIn2,'TumorCov_type1'])
           tmpOut[tmpOut[,4]==duplicationIn2,'NormalCov_type1'] <- mean(tmpOut[tmpOut[,4]==duplicationIn2,'NormalCov_type1'])  
-          tmpOut[tmpOut[,4]==duplicationIn2,'logR_type1']      <- mean(tmpOut[tmpOut[,4]==duplicationIn2,'logR_type1'])  
-          
+          tmpOut[tmpOut[,4]==duplicationIn2,'logR_type1']      <- mean(tmpOut[tmpOut[,4]==duplicationIn2,'logR_type1'])   
         }
         
         tmpOut  <- tmpOut[!duplicated(tmpOut[,1]),,drop=FALSE]
@@ -1283,7 +1376,6 @@ for (region in regions)
         combinedTable <- data.frame(tmpOut,stringsAsFactors=FALSE)
         combinedTable$logRcombined <- log2(((combinedTable$TumorCov_type1+combinedTable$TumorCov_type2)/(combinedTable$NormalCov_type1+combinedTable$NormalCov_type2))*MultFactor)
         combinedTable$BAFcombined  <- combinedTable$TumorCov_type1/(combinedTable$TumorCov_type1+combinedTable$TumorCov_type2)
-        
 
         if(nrow(combinedTable) != 0){
           combinedTable$binlogRCombined <- NA
@@ -1895,6 +1987,7 @@ if(cleanUp){
   # system(cmd)
 
 }
+
 
 
 
