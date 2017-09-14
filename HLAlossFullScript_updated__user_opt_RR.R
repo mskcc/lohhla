@@ -41,7 +41,9 @@ option_list = list(
   make_option(c("-ga", "--gatkDir"), type="character", default='', 
               help="path to GATK executable [default= %default]", metavar="character"),
   make_option(c("-ex", "--HLAexonLoc"), type="character", default='/camp/lab/swantonc/working/rosentr/data/IMGT/hla.dat', 
-              help="HLA exon boundaries for plotting [default= %default]", metavar="character")
+              help="HLA exon boundaries for plotting [default= %default]", metavar="character"),
+  make_option(c("-w", "--ignoreWarnings"), type="logical", default=TRUE, 
+              help="continue running with warnings [default= %default]", metavar="character")
 )
 
 
@@ -89,6 +91,7 @@ GATKDir           <- opt$gatkDir
 HLAexonLoc        <- opt$HLAexonLoc
 kmerSize          <- opt$kmerSize
 fishing.step      <- opt$fishingStep
+ignoreWarnings    <- opt$ignoreWarnings
 
 if (is.null(opt$BAMDir) | is.null(opt$outputDir) | is.null(opt$hlaPath) | is.null(opt$HLAfastaLoc)){
   print_help(opt_parser)
@@ -117,50 +120,13 @@ require(Rsamtools, quietly = TRUE)
 interactive           <- FALSE
 if(interactive)
 {
-  full.patient          <- "L_LTX050"
-  workDir               <- "/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/tx100-noPoly/L_LTX050/exome/NeoAntigen/LOH/"
-  hlaPath               <- '/camp/lab/swantonc/working/rosentr/projects/neoantigen/tx100/samples-20160818/LTX050/LTX050.polysolver/winners.hla.txt'
-  normalBAMfile         <- '/farm/tracerx/lung/release_002.2/L_LTX050/exome/BAM/processed/L_LTX050_BS_GL.bam'
-  BAMDir                <- '/farm/tracerx/lung/release_002.2/L_LTX050/exome/BAM/processed/'
-  HLAfastaLoc           <- "/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta"
-  mapping.step          <- TRUE
-  cleanUp               <- FALSE
-  CopyNumLoc            <- '/farm/tracerx/lung/release_002.2/L_LTX050/exome/ASCAT/solutions.txt'
-  overrideDir           <- '/farm/tracerx/lung/release/L_LTX050/exome/QC/flagstat/'
-
-  full.patient          <- "U_LTX156"
-  workDir               <- "/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/tx100-noPoly/U_LTX156/exome/NeoAntigen/LOH/"
-  hlaPath               <- '/camp/lab/swantonc/working/rosentr/projects/neoantigen/tx100/samples-20160818/LTX156/LTX156.polysolver/winners.hla.txt'
-  normalBAMfile         <- '/farm/tracerx/lung/release_002.2/U_LTX156/exome/BAM/processed/U_LTX156_BS_GL.bam'
-  BAMDir                <- '/farm/tracerx/lung/release_002.2/U_LTX156/exome/BAM/processed/'
-  HLAfastaLoc           <- "/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta"
-  mapping.step          <- TRUE
-  cleanUp               <- FALSE
-  CopyNumLoc            <- '/farm/tracerx/lung/release_002.2/U_LTX156/exome/ASCAT/solutions.txt'
-  overrideDir           <- '/farm/tracerx/lung/release/U_LTX156/exome/QC/flagstat/'
-
-  full.patient          <- "D_LMS021"
-  workDir               <- "/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Rizvi-noPoly/D_LMS021//exome/NeoAntigen/LOH/"
-  hlaPath               <- '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Rizvi/LMS021/exome/NeoAntigen/Polysolver/winners.hla.txt'
-  normalBAMfile         <- '/farm/tracerx/lung/LMS/lms_280715/D_LMS021/exome/BAM/processed/D_LMS021_GL.bam'
-  BAMDir                <- '/farm/tracerx/lung/LMS/lms_280715/D_LMS021/exome/BAM/processed/'
-  HLAfastaLoc           <- "/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta"
-  mapping.step          <- TRUE
-  cleanUp               <- FALSE
-  CopyNumLoc            <- '/farm/tracerx/lung/LMS/lms_280715/D_LMS021/exome/ASCAT/solutions.txt'
-  overrideDir           <- '/farm/tracerx/lung/LMS/lms_280715/D_LMS021/exome/QC/flagstat/'
-
-  full.patient          <- "A_LTX049"
-  workDir               <- "/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/tx100-noPoly/A_LTX049/rna/NeoAntigen/LOH/"
-  hlaPath               <- '/camp/lab/swantonc/working/rosentr/projects/neoantigen/tx100/samples-20160818/LTX049/LTX049.polysolver/winners.hla.txt'
-  normalBAMfile         <- 'FALSE'
-  BAMDir                <- '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/tx100-noPoly/A_LTX049/rna/BAM/'
-  HLAfastaLoc           <- "/camp/lab/swantonc/working/rosentr/data/IMGT/hla_abc_complete.rna.fasta"
-  mapping.step          <- TRUE
-  cleanUp               <- FALSE
-  CopyNumLoc            <- 'FALSE'
+  opt<-parse_args(opt_parser,c('--patientId', 'B_MET014', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly-fished-optitype/B_MET014//exome/NeoAntigen/LOH/', '--normalBAMfile', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET014/exome/BAM/processed/B_MET014_GL.bam', '--BAMDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET014/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly-fished-optitype/B_MET014/optitype.hlas.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET014/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET014/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
 
   opt<-parse_args(opt_parser,c('--patientId', 'B_MET002', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly-fished/B_MET002//exome/NeoAntigen/LOH/', '--normalBAMfile', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET002/exome/BAM/processed/B_MET002_GL.bam', '--BAMDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET002/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly/B_MET002/exome/NeoAntigen/Polysolver/winners.hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET002/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET002/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
+  opt<-parse_args(opt_parser,c('--patientId', 'B_MET081', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly-fished/B_MET081//exome/NeoAntigen/LOH/', '--normalBAMfile', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET081/exome/BAM/processed/B_MET081_GL.bam', '--BAMDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET081/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly/B_MET081/exome/NeoAntigen/Polysolver/winners.hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET081/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET081/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
+  opt<-parse_args(opt_parser,c('--patientId', 'B_LTX038', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/B_LTX038//exome/NeoAntigen/LOH/', '--normalBAMfile', '/farm/tracerx/lung/release_002.2/B_LTX038/exome/BAM/processed/B_LTX038_BS_GL.bam', '--BAMDir', '/farm/tracerx/lung/release_002.2/B_LTX038/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/B_LTX038/new_hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/farm/tracerx/lung/release_002.2/B_LTX038/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/farm/tracerx/lung/release_002.2/B_LTX038/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
+  opt<-parse_args(opt_parser,c('--patientId', 'L_LTX110', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/L_LTX110//exome/NeoAntigen/LOH/', '--normalBAMfile', '/farm/tracerx/lung/release_002.2/L_LTX110/exome/BAM/processed/L_LTX110_BS_GL.bam', '--BAMDir', '/farm/tracerx/lung/release_002.2/L_LTX110/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/L_LTX110/new_hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/farm/tracerx/lung/release_002.2/L_LTX110/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/farm/tracerx/lung/release_002.2/L_LTX110/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
+  opt<-parse_args(opt_parser,c('--patientId', 'R_LTX145', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/R_LTX145//exome/NeoAntigen/LOH/', '--normalBAMfile', '/farm/tracerx/lung/release_002.2/R_LTX145/exome/BAM/processed/R_LTX145_BS_GL.bam', '--BAMDir', '/farm/tracerx/lung/release_002.2/R_LTX145/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/R_LTX145/new_hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/farm/tracerx/lung/release_002.2/R_LTX145/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/farm/tracerx/lung/release_002.2/R_LTX145/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
   
 }
 
@@ -193,6 +159,11 @@ override <-  ifelse(overrideDir == FALSE, yes = FALSE, no = TRUE)
 gamma                   <- 1
 binSize                 <- 150
 
+if(ignoreWarnings){
+  howToWarn <- warning
+} else{
+  howToWarn <- stop
+}
 
 #############
 # functions #
@@ -480,8 +451,7 @@ t.test.NA <- function(x){
   }
 }
 
-#print('got here')
-#print(workDir)
+
 #############################
 # create output directories # 
 #############################
@@ -510,13 +480,20 @@ BAMfiles  <- list.files(BAMDir, pattern = '.bam$')
 regions   <- sapply(BAMfiles, FUN =function(x) {return(unlist(strsplit(x, split = '.bam'))[1])})
 
 hlaAlleles <- read.table(hlaPath, sep = '\t', header = FALSE, as.is = TRUE)
-hlaAlleles <- unique(sort(c(hlaAlleles$V2, hlaAlleles$V3)))
+if(ncol(hlaAlleles) == 3){
+  hlaAlleles <- unique(sort(c(hlaAlleles$V2, hlaAlleles$V3)))
+} else {
+    if(ncol(hlaAlleles) == 1){
+    hlaAlleles <- unique(sort(hlaAlleles$V1))
+  }
+}
 
 hlaFasta   <- read.fasta(HLAfastaLoc)
 
 if(!all(hlaAlleles %in% names(hlaFasta))) {
   warning(paste('Missing HLAs from FASTA: ', paste(hlaAlleles[-which(hlaAlleles %in% names(hlaFasta))], collapse = ', '), '\nTrying to find alternative.', sep = ''))
-  missing <- hlaAlleles[-which(hlaAlleles %in% names(hlaFasta))]
+  if(length(which(hlaAlleles %in% names(hlaFasta))) == 0 ) {  missing <- hlaAlleles } 
+  if(length(which(hlaAlleles %in% names(hlaFasta))) != 0 ) {  missing <- hlaAlleles[-which(hlaAlleles %in% names(hlaFasta))] } 
   for(i in missing){
     alt <- grep(pattern = i, x = names(hlaFasta), value = TRUE)[1]
     if(!is.na(alt)){
@@ -781,8 +758,6 @@ if(runWithNormal){
 }
 
 
-# print(regionUniqMappedRegions)
-
 
 ####################################
 # compare coverage between alleles # 
@@ -848,6 +823,11 @@ for (region in regions)
       if(length(missMatchPositions$diffSeq1) == 0){
         next
       }
+      if(length(missMatchPositions$diffSeq1) < 5){
+        msg <- 'HLA alleles are very similar (fewer than 5 mismatch positions)! Keep that in mind when considering results.'
+        write.table(paste('\n', msg, '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+        warning(msg)
+      }
       
     }
     
@@ -904,9 +884,6 @@ for (region in regions)
       
       #apply minimum coverage thresholds (we only apply this to the normal for now)
       HLA_A_type1normal <- HLA_A_type1normal[HLA_A_type1normal$V4>minCoverageFilter,,drop=FALSE]
-      if(nrow(HLA_A_type1normal) == 0){
-        print('No position has greater than minimum coverage filter')
-      }
       
       tmp <- intersect(rownames(HLA_A_type1tumor),rownames(HLA_A_type1normal))
       HLA_A_type1tumor  <- HLA_A_type1tumor[tmp,,drop=FALSE]
@@ -939,7 +916,7 @@ for (region in regions)
       
       #apply minimum coverage thresholds (we only apply this to the normal for now)
       HLA_A_type2normal <- HLA_A_type2normal[HLA_A_type2normal$V4>minCoverageFilter,,drop=FALSE]
-      
+
       tmp <- intersect(rownames(HLA_A_type2tumor),rownames(HLA_A_type2normal))
       HLA_A_type2tumor  <- HLA_A_type2tumor[tmp,,drop=FALSE]
       # HLA_A_type2normal <- HLA_A_type2normal[tmp,,drop=FALSE]
@@ -953,6 +930,30 @@ for (region in regions)
       
     }
 
+    # catch issues with HLA coverage
+    HLA_type1_ok <- length(names(HLA_A_type1normalCov)[names(HLA_A_type1normalCov)%in%missMatchPositions$diffSeq1])
+    HLA_type2_ok <- length(names(HLA_A_type2normalCov)[names(HLA_A_type2normalCov)%in%missMatchPositions$diffSeq2])
+    if(nrow(HLA_A_type1normal) == 0 | nrow(HLA_A_type2normal) == 0){
+      msg <- paste('No position has greater than minimum coverage filter for ', HLA_gene, sep = '')
+      write.table(paste('\n', msg, '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+      next
+    }
+    if(HLA_type1_ok == 0 | HLA_type2_ok == 0){
+      msg <- paste('No mismatch position has greater than minimum coverage filter for ', HLA_gene, sep = '')
+      write.table(paste('\n', msg, '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+      next
+    }
+    if(HLA_type1_ok / HLA_type2_ok < 0.05){
+      msg <- paste('Check that the HLA type is correct for ', HLA_A_type1, '!', sep = '')
+      write.table(paste('\n', msg, '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+      howToWarn(msg)
+    }
+    if(HLA_type2_ok / HLA_type1_ok < 0.05){
+      msg <- paste('Check that the HLA type is correct for ', HLA_A_type2, '!', sep = '')
+      write.table(paste('\n', msg, '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+      howToWarn(msg)
+    }
+    
 
     
     if(extractNONmismatchReads%in%TRUE)
@@ -1340,7 +1341,7 @@ for (region in regions)
         startChar <- min(c(as.numeric(names(HLA_A_type1tumorCov))),as.numeric(names(HLA_A_type2tumorCov)))
         endChar   <- max(c(as.numeric(names(HLA_A_type1tumorCov))),as.numeric(names(HLA_A_type2tumorCov)))
         seqToConsider <- seq(startChar,endChar,by=binSize)
-        seqToConsider <- c(seqToConsider[-length(seqToConsider)],endChar)
+        seqToConsider <- c(seqToConsider[-length(seqToConsider)],endChar+1)
         
         binLogR       <- c()
         for (i in 1:(length(seqToConsider)-1))
@@ -1380,11 +1381,9 @@ for (region in regions)
         
         for(duplicationIn2 in dup2)
         {
-          
           tmpOut[tmpOut[,4]==duplicationIn2,'TumorCov_type1']  <- mean(tmpOut[tmpOut[,4]==duplicationIn2,'TumorCov_type1'])
           tmpOut[tmpOut[,4]==duplicationIn2,'NormalCov_type1'] <- mean(tmpOut[tmpOut[,4]==duplicationIn2,'NormalCov_type1'])  
-          tmpOut[tmpOut[,4]==duplicationIn2,'logR_type1']      <- mean(tmpOut[tmpOut[,4]==duplicationIn2,'logR_type1'])  
-          
+          tmpOut[tmpOut[,4]==duplicationIn2,'logR_type1']      <- mean(tmpOut[tmpOut[,4]==duplicationIn2,'logR_type1'])   
         }
         
         tmpOut  <- tmpOut[!duplicated(tmpOut[,1]),,drop=FALSE]
@@ -1395,7 +1394,6 @@ for (region in regions)
         combinedTable <- data.frame(tmpOut,stringsAsFactors=FALSE)
         combinedTable$logRcombined <- log2(((combinedTable$TumorCov_type1+combinedTable$TumorCov_type2)/(combinedTable$NormalCov_type1+combinedTable$NormalCov_type2))*MultFactor)
         combinedTable$BAFcombined  <- combinedTable$TumorCov_type1/(combinedTable$TumorCov_type1+combinedTable$TumorCov_type2)
-        
 
         if(nrow(combinedTable) != 0){
           combinedTable$binlogRCombined <- NA
@@ -2007,6 +2005,8 @@ if(cleanUp){
   # system(cmd)
 
 }
+
+
 
 
 
