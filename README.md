@@ -29,8 +29,58 @@ USAGE: Rscript /location/of/LOHHLA/script  [OPTIONS]
 
 OPTIONS:
 
-*   -id / --patientId            patient ID                         type="character"              default=NULL
-*   -o  / --outputDir            location of output directory       type="character"              default=NULL
+Options:
+            
+        -id CHARACTER, --patientId=CHARACTER
+                patient ID
+
+        -o CHARACTER, --outputDir=CHARACTER
+                location of output directory
+
+        -nBAM CHARACTER, --normalBAMfile=CHARACTER
+                normal BAM file
+                can be FALSE to run without normal sample
+
+        -BAM CHARACTER, --BAMDir=CHARACTER
+                location of all BAMs to test
+
+        -hla CHARACTER, --hlaPath=CHARACTER
+                location to patient HLA calls
+
+        -hlaLoc CHARACTER, --HLAfastaLoc=CHARACTER
+                location of HLA FASTA [default= /farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta]
+
+        -cn CHARACTER, --CopyNumLoc=CHARACTER
+                location to patient purity and ploidy output
+                can be FALSE to only estimate allelic imbalance
+
+        -ov CHARACTER, --overrideDir=CHARACTER
+                location of flagstat information if already run [default= FALSE]
+
+        -mc CHARACTER, --minCoverageFilter=CHARACTER
+                minimum coverage at mismatch site [default= 30]
+
+        -mm CHARACTER, --numMisMatch=CHARACTER
+                number of mismatches allowed in read to map to HLA allele [default= 1]
+
+        -m CHARACTER, --mappingStep=CHARACTER
+                does mapping to HLA alleles need to be done [default= TRUE]
+
+        -cu CHARACTER, --cleanUp=CHARACTER
+                remove temporary files [default= TRUE]
+
+        -no CHARACTER, --novoDir=CHARACTER
+                path to novoalign executable [default= ]
+
+        -ga CHARACTER, --gatkDIR=CHARACTER
+                path to GATK executable [default= ]
+
+        -ex CHARACTER, --HLAexonLoc=CHARACTER
+                HLA exon boundaries for plotting [default= ]
+
+        -h, --help
+                Show this help message and exit
+
 
 *  Test
 
