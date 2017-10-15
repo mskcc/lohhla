@@ -28,9 +28,9 @@ Running LOHHLA with no arguments prints the usage information.
 USAGE: Rscript /location/of/LOHHLA/script  [OPTIONS]
 
 OPTIONS:
-*   make_option(c("-id", "--patientId"), type="character", default=NULL, 
-              help="patient ID", metavar="character"),
-  make_option(c("-o", "--outputDir"), type="character", default=NULL, 
+*   -id / --patientId            patient ID                         type="character"              default=NULL
+*   -o  / --outputDir            location of output directory       type="character"              default=NULL
+*
               help="location of output directory", metavar="character"),
   make_option(c("-nBAM", "--normalBAMfile"), type="character", default=NULL, 
               help="normal BAM file\n\t\tcan be FALSE to run without normal sample", metavar="character"),
