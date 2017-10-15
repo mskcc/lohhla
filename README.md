@@ -82,42 +82,6 @@ Options:
                 Show this help message and exit
 
 
-*  Test
-
-              help="location of output directory", metavar="character"),
-  make_option(c("-nBAM", "--normalBAMfile"), type="character", default=NULL, 
-              help="normal BAM file\n\t\tcan be FALSE to run without normal sample", metavar="character"),
-  make_option(c("-BAM", "--BAMDir"), type="character", default=NULL, 
-              help="location of all BAMs to test", metavar="character"),
-  make_option(c("-hla", "--hlaPath"), type="character", default=NULL, 
-              help="location to patient HLA calls", metavar="character"),
-  make_option(c("-hlaLoc", "--HLAfastaLoc"), type="character", default="/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta", 
-              help="location of HLA FASTA [default= %default]", metavar="character"),
-  make_option(c("-cn", "--CopyNumLoc"), type="character", default="FALSE", 
-              help="location to patient purity and ploidy output\n\t\tcan be FALSE to only estimate allelic imbalance", metavar="character"),
-  make_option(c("-ov", "--overrideDir"), type="character", default='FALSE', 
-              help="location of flagstat information if already run [default= %default]", metavar="character"),
-  make_option(c("-mc", "--minCoverageFilter"), type="numeric", default=30, 
-              help="minimum coverage at mismatch site [default= %default]", metavar="character"),
-  make_option(c("-mm", "--numMisMatch"), type="numeric", default=1, 
-              help="number of mismatches allowed in read to map to HLA allele [default= %default]", metavar="character"),
-  make_option(c("-m", "--mappingStep"), type="logical", default=TRUE, 
-              help="does mapping to HLA alleles need to be done [default= %default]", metavar="character"),
-  make_option(c("-cu", "--cleanUp"), type="logical", default=TRUE, 
-              help="remove temporary files [default= %default]", metavar="character"),
-  make_option(c("-no", "--novoDir"), type="character", default='', 
-              help="path to novoalign executable [default= %default]", metavar="character"),
-  make_option(c("-ga", "--gatkDIR"), type="character", default='', 
-              help="path to GATK executable [default= %default]", metavar="character"),
-  make_option(c("-ex", "--HLAexonLoc"), type="character", default='', 
-              help="HLA exon boundaries for plotting [default= %default]", metavar="character")
-
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
 
 ### Who do I talk to? ###
 
