@@ -18,14 +18,14 @@ using next-generation sequencing data.
 ### How do I get set up? ###
 
 LOHHLA is an tool designed to work from the command-line, using Rscript. To implement LOHHLA, please ensure a number of dependencies are first installed 
-installed. These include; 
+installed. These include:
+
 * BEDTools (http://bedtools.readthedocs.io/en/latest/)
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* SAMtools (http://samtools.sourceforge.net/)
+* R (https://www.r-project.org/about.html)
+* Novalign (http://www.novocraft.com/products/novoalign/)
+* Picard (http://broadinstitute.github.io/picard/)
+
 
 ### Contribution guidelines ###
 
