@@ -9,7 +9,7 @@ Here, we present **LOHHLA**, **L**oss **O**f **H**eterozygosity in **H**uman **L
 using next-generation sequencing data. 
 
 
-### What do I need to install? ###
+### How do I need to LOHHLA? ###
 
 Please ensure a number of dependencies are first installed. These include:
 
@@ -29,7 +29,6 @@ USAGE: Rscript /location/of/LOHHLA/script  [OPTIONS]
 
 OPTIONS:
 
-Options:
             
         -id CHARACTER, --patientId=CHARACTER
                 patient ID
