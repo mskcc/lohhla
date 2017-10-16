@@ -9,7 +9,7 @@ Here, we present **LOHHLA**, **L**oss **O**f **H**eterozygosity in **H**uman **L
 using next-generation sequencing data. 
 
 
-### How do I need to LOHHLA? ###
+### What do I need to install to run LOHHLA? ###
 
 Please ensure a number of dependencies are first installed. These include:
 
@@ -80,6 +80,8 @@ OPTIONS:
         -h, --help
                 Show this help message and exit
 
+
+### How can I test if LOHHLA is working? ###
 
 
 ### Who do I talk to? ###
