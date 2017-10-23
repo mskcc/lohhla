@@ -1,0 +1,141 @@
+
+####################### 
+####### Inputs ######## 
+#######################
+full.patient	example	
+workDir	/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out/	
+hlaPath	/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/hla-types/hlas	
+normalBAMfile	/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam/example_BS_GL_sorted.bam	
+BAMDir	/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam/	
+HLAfastaLoc	/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta	
+CopyNumLoc	/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/ascat/solutions.txt	
+GATKDir	/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/	
+NOVODir	/camp/apps/eb/software/novoalign/3.07.00/bin/	
+
+
+generate patient reference fasta at Fri Oct 20 17:13:10 2017
+
+
+nix file for patient reference fasta at Fri Oct 20 17:13:10 2017
+
+novoindex /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out/example.patient.hlaFasta.nix /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out/example.patient.hlaFasta.fa
+
+create kmer file at Fri Oct 20 17:13:11 2017
+
+
+extract HLA possible reads from BAM file at Fri Oct 20 17:13:15 2017
+
+samtools view -H /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_BS_GL_sorted.bam > /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_BS_GL_sorted.bam chr6:29909037-29913661 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_BS_GL_sorted.bam chr6:31321649-31324964 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_BS_GL_sorted.bam chr6:31236526-31239869 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_BS_GL_sorted.bam chr6_apd_hap1 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_BS_GL_sorted.bam chr6_cox_hap2 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_BS_GL_sorted.bam chr6_dbb_hap3 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_BS_GL_sorted.bam chr6_mann_hap4 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_BS_GL_sorted.bam chr6_mcf_hap5 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_BS_GL_sorted.bam chr6_qbl_hap6 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_BS_GL_sorted.bam chr6_ssto_hap7 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.sam
+
+turn into fastq at Fri Oct 20 17:13:15 2017
+
+java -jar /camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin//SamToFastq.jar I=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.sam F=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.1.fastq F2=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.2.fastq VALIDATION_STRINGENCY=SILENT
+
+get partially matching reads and turn fished sam into fastq at Fri Oct 20 17:13:16 2017
+
+
+combine chr6 reads with fished reads at Fri Oct 20 17:13:29 2017
+
+
+align to all HLA alleles at Fri Oct 20 17:13:30 2017
+
+/camp/apps/eb/software/novoalign/3.07.00/bin//novoalign -d /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out/example.patient.hlaFasta.nix -f /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.1.fastq /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.2.fastq -F STDFQ -R 0 -r All 9999 -o SAM -o FullNW 1> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.patient.reference.hlas.sam 2> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted_BS_GL.chr6region.patient.reference.hlas.metrics
+samtools view -bS -o /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.patient.reference.hlas.bam /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.patient.reference.hlas.sam
+java -jar /camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin//SortSam.jar I=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.patient.reference.hlas.bam O=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.patient.reference.hlas.csorted.bam SORT_ORDER=coordinate
+samtools rmdup /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.patient.reference.hlas.csorted.bam /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.patient.reference.hlas.csorted.noduplicates.bam
+samtools view -f 2 -b -o /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.patient.reference.hlas.csorted.noduplicates.filtered.bam /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.patient.reference.hlas.csorted.noduplicates.bam
+samtools index /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.patient.reference.hlas.csorted.noduplicates.filtered.bam
+
+get HLA specific SAM for allele: hla_a_01_01_01_01 at Fri Oct 20 17:13:31 2017
+
+samtools view -b -o /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.temp.hla_a_01_01_01_01.bam /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.patient.reference.hlas.csorted.noduplicates.filtered.bam hla_a_01_01_01_01
+samtools sort /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.temp.hla_a_01_01_01_01.bam -o /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.type.hla_a_01_01_01_01.bam
+samtools index /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.type.hla_a_01_01_01_01.bam
+java -jar /camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin//FilterSamReads.jar I=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.type.hla_a_01_01_01_01.bam FILTER=includeReadList READ_LIST_FILE=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.hla_a_01_01_01_01.passed.reads.txt OUTPUT=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.type.hla_a_01_01_01_01.filtered.bam
+samtools index /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.type.hla_a_01_01_01_01.filtered.bam
+
+get HLA specific SAM for allele: hla_a_24_02_01_01 at Fri Oct 20 17:13:32 2017
+
+samtools view -b -o /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.temp.hla_a_24_02_01_01.bam /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.patient.reference.hlas.csorted.noduplicates.filtered.bam hla_a_24_02_01_01
+samtools sort /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.temp.hla_a_24_02_01_01.bam -o /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.type.hla_a_24_02_01_01.bam
+samtools index /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.type.hla_a_24_02_01_01.bam
+java -jar /camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin//FilterSamReads.jar I=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.type.hla_a_24_02_01_01.bam FILTER=includeReadList READ_LIST_FILE=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.hla_a_24_02_01_01.passed.reads.txt OUTPUT=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.type.hla_a_24_02_01_01.filtered.bam
+samtools index /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.type.hla_a_24_02_01_01.filtered.bam
+
+extract HLA possible reads from BAM file at Fri Oct 20 17:13:32 2017
+
+samtools view -H /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_tumor_sorted.bam > /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_tumor_sorted.bam chr6:29909037-29913661 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_tumor_sorted.bam chr6:31321649-31324964 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_tumor_sorted.bam chr6:31236526-31239869 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_tumor_sorted.bam chr6_apd_hap1 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_tumor_sorted.bam chr6_cox_hap2 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_tumor_sorted.bam chr6_dbb_hap3 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_tumor_sorted.bam chr6_mann_hap4 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_tumor_sorted.bam chr6_mcf_hap5 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_tumor_sorted.bam chr6_qbl_hap6 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.sam
+samtools view /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/bam//example_tumor_sorted.bam chr6_ssto_hap7 >> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.sam
+
+turn into fastq at Fri Oct 20 17:13:33 2017
+
+java -jar /camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin//SamToFastq.jar I=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.sam F=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.1.fastq F2=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.2.fastq VALIDATION_STRINGENCY=SILENT
+
+get partially matching reads and turn fished sam into fastq at Fri Oct 20 17:13:33 2017
+
+
+combine chr6 reads with fished reads at Fri Oct 20 17:13:46 2017
+
+
+align to all HLA alleles at Fri Oct 20 17:13:46 2017
+
+/camp/apps/eb/software/novoalign/3.07.00/bin//novoalign -d /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out/example.patient.hlaFasta.nix -f /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.1.fastq /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.2.fastq -F STDFQ -R 0 -r All 9999 -o SAM -o FullNW 1> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.patient.reference.hlas.sam 2> /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted_BS_GL.chr6region.patient.reference.hlas.metrics
+samtools view -bS -o /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.patient.reference.hlas.bam /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.patient.reference.hlas.sam
+java -jar /camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin//SortSam.jar I=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.patient.reference.hlas.bam O=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.patient.reference.hlas.csorted.bam SORT_ORDER=coordinate
+samtools rmdup /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.patient.reference.hlas.csorted.bam /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.patient.reference.hlas.csorted.noduplicates.bam
+samtools view -f 2 -b -o /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.patient.reference.hlas.csorted.noduplicates.filtered.bam /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.patient.reference.hlas.csorted.noduplicates.bam
+samtools index /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.patient.reference.hlas.csorted.noduplicates.filtered.bam
+
+get HLA specific SAM for allele: hla_a_01_01_01_01 at Fri Oct 20 17:13:48 2017
+
+samtools view -b -o /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.temp.hla_a_01_01_01_01.bam /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.patient.reference.hlas.csorted.noduplicates.filtered.bam hla_a_01_01_01_01
+samtools sort /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.temp.hla_a_01_01_01_01.bam -o /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.type.hla_a_01_01_01_01.bam
+samtools index /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.type.hla_a_01_01_01_01.bam
+java -jar /camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin//FilterSamReads.jar I=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.type.hla_a_01_01_01_01.bam FILTER=includeReadList READ_LIST_FILE=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.hla_a_01_01_01_01.passed.reads.txt OUTPUT=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.type.hla_a_01_01_01_01.filtered.bam
+samtools index /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.type.hla_a_01_01_01_01.filtered.bam
+
+get HLA specific SAM for allele: hla_a_24_02_01_01 at Fri Oct 20 17:13:49 2017
+
+samtools view -b -o /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.temp.hla_a_24_02_01_01.bam /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.chr6region.patient.reference.hlas.csorted.noduplicates.filtered.bam hla_a_24_02_01_01
+samtools sort /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.temp.hla_a_24_02_01_01.bam -o /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.type.hla_a_24_02_01_01.bam
+samtools index /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.type.hla_a_24_02_01_01.bam
+java -jar /camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin//FilterSamReads.jar I=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.type.hla_a_24_02_01_01.bam FILTER=includeReadList READ_LIST_FILE=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.hla_a_24_02_01_01.passed.reads.txt OUTPUT=/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.type.hla_a_24_02_01_01.filtered.bam
+samtools index /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.type.hla_a_24_02_01_01.filtered.bam
+
+get coverage of HLA alleles for region: example_BS_GL_sorted at Fri Oct 20 17:13:49 2017
+
+samtools mpileup /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.type.hla_a_01_01_01_01.filtered.bam -f /farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta > /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted.hla_a_01_01_01_01.normal.mpileup
+samtools mpileup /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted/example_BS_GL_sorted.type.hla_a_24_02_01_01.filtered.bam -f /farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta > /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_BS_GL_sorted.hla_a_24_02_01_01.normal.mpileup
+
+get coverage of HLA alleles for region: example_tumor_sorted at Fri Oct 20 17:13:50 2017
+
+samtools mpileup /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.type.hla_a_01_01_01_01.filtered.bam -f /farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta > /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted.hla_a_01_01_01_01.tumor.mpileup
+samtools mpileup /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted/example_tumor_sorted.type.hla_a_24_02_01_01.filtered.bam -f /farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta > /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out//example_tumor_sorted.hla_a_24_02_01_01.tumor.mpileup
+
+analyzing coverage differences in region: example_tumor_sorted at Fri Oct 20 17:13:51 2017
+
+
+plotting for region: example_tumor_sorted at Fri Oct 20 17:14:03 2017
+
+
+Run with coverageStep==TRUE for : example_tumor_sorted first! 
+
