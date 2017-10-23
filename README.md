@@ -27,11 +27,13 @@ Within R, the following packages are required:
 * zoo (https://cran.r-project.org/package=zoo)
 * Rsamtools (http://bioconductor.org/packages/release/bioc/html/Rsamtools.html)
 
+LOHHLA also requires an HLA fasta file. This can be obtained from Polysolver (http://archive.broadinstitute.org/cancer/cga/polysolver)
+
 ### How do I install LOHHLA? ###
 
 To install LOHHLA, simply clone the repository:
 
-git clone https://nmcgranahan@bitbucket.org/mcgranahanlab/lohhla.git
+git clone https://bitbucket.org/mcgranahanlab/lohhla.git
 
 ### How do I run LOHHLA? ###
 
