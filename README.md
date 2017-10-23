@@ -88,3 +88,8 @@ OPTIONS:
 
 * Repo owner or admin
 * Other community or team contact
+
+### How do I cite LOHHLA ? ###
+
+If you use LOHHLA in your research, please cite the following paper:
+
