@@ -27,6 +27,11 @@ Within R, the following packages are required:
 * zoo (https://cran.r-project.org/package=zoo)
 * Rsamtools (http://bioconductor.org/packages/release/bioc/html/Rsamtools.html)
 
+### How do I install LOHHLA? ###
+
+To install LOHHLA, simple clone the repository:
+
+git clone https://nmcgranahan@bitbucket.org/mcgranahanlab/lohhla.git
 
 ### How do I run LOHHLA? ###
 
