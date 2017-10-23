@@ -15,9 +15,17 @@ Please ensure a number of dependencies are first installed. These include:
 
 * BEDTools (http://bedtools.readthedocs.io/en/latest/)
 * SAMtools (http://samtools.sourceforge.net/)
-* R (https://www.r-project.org/about.html)
 * Novalign (http://www.novocraft.com/products/novoalign/)
 * Picard (http://broadinstitute.github.io/picard/)
+* R (https://www.r-project.org/about.html)
+
+Within R, the following packages are required:
+
+* seqinr (https://CRAN.R-project.org/package=seqinr)
+* Biostrings (http://bioconductor.org/packages/release/bioc/html/Biostrings.html)
+* beeswarm (https://CRAN.R-project.org/package=beeswarm)
+* zoo (https://cran.r-project.org/package=zoo)
+* Rsamtools (http://bioconductor.org/packages/release/bioc/html/Rsamtools.html)
 
 
 ### How do I run LOHHLA? ###
