@@ -112,7 +112,7 @@ OPTIONS:
 
 ### How can I test if LOHHLA is working? ###
 
-Example data is included in the LOHHLA repository. Alter the "example.sh" script to match your local file structure and ensure the requisite dependencies are available / loaded.
+Example data is included in the LOHHLA repository. To run LOHHLA on the example dataset, alter the "example.sh" script to match your local file structure and ensure the requisite dependencies are available / loaded.
 The --HLAfastaLoc, --gatkDir, and --novoDir file paths should also be updated to the corresponding locations.
 File paths must be full paths. Run "example.sh" and the output should match that found in the "correct-example-out" directory provided.
 
@@ -124,4 +124,6 @@ If you have any issues with lohhla, please send an email to lohhla@gmail.com
 ### How do I cite LOHHLA ? ###
 
 If you use LOHHLA in your research, please cite the following paper:
+
+McGranahan et al., Allele-Specific HLA Loss and Immune Escape in Lung Cancer Evolution, Cell (2017), https://doi.org/10.1016/j.cell.2017.10.001
 
