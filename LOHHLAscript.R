@@ -60,24 +60,6 @@ print(opt)
 # Command line arguments #
 ##########################
 
-# cmdArgs         <- commandArgs(trailingOnly = TRUE);
-# full.patient    <- cmdArgs[1]
-# normalBAMfile   <- cmdArgs[3]
-# BAMDir          <- cmdArgs[4]
-# hlaPath         <- cmdArgs[5]
-# HLAfastaLoc     <- cmdArgs[6]
-# CopyNumLoc      <- cmdArgs[7]
-# mapping.step    <- as.logical(cmdArgs[8])
-# cleanUp         <- as.logical(cmdArgs[9])
-# overrideDir     <- cmdArgs[10]
-
-# minCoverageFilter       <- 30
-# GATKDir     <- '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/'
-# NOVODir     <- "/camp/apps/eb/software/novoalign/3.07.00/bin/"
-# HLAexonLoc  <- '/camp/lab/swantonc/working/rosentr/data/IMGT/hla.dat'
-# numMisMatch <- 1
-
-
 full.patient      <- opt$patientId
 workDir           <- opt$outputDir
 normalBAMfile     <- opt$normalBAMfile
@@ -129,6 +111,7 @@ require(Rsamtools, quietly = TRUE)
 interactive           <- FALSE
 if(interactive)
 {
+  # if you wish to run script interactively, then alter parameters below
   opt<-parse_args(opt_parser,c('--patientId', 'G_K107'
                                , '--outputDir', '/camp/lab/swantonc/working/mcgrann/projects/LOHproject/kidney_run/G_K107_full/'
                                , '--normalBAMfile', '/camp/project/tracerX/working/CRENAL/OUTPUT/G_K107/Rabbit_Hole_Exome/MERGED/DE_DUPED/N1d1ex1.bam'
@@ -141,12 +124,6 @@ if(interactive)
                                , '--overrideDir', '/camp/lab/swantonc/working/mcgrann/projects/LOHproject/kidney_run/G_K107/flagstat/'
                                , '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/'
                                , '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
-  
-  #opt<-parse_args(opt_parser,c('--patientId', 'B_MET002', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly-fished/B_MET002//exome/NeoAntigen/LOH/', '--normalBAMfile', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET002/exome/BAM/processed/B_MET002_GL.bam', '--BAMDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET002/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly/B_MET002/exome/NeoAntigen/Polysolver/winners.hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET002/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET002/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
-  #opt<-parse_args(opt_parser,c('--patientId', 'B_MET081', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly-fished/B_MET081//exome/NeoAntigen/LOH/', '--normalBAMfile', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET081/exome/BAM/processed/B_MET081_GL.bam', '--BAMDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET081/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/Brastianos-noPoly/B_MET081/exome/NeoAntigen/Polysolver/winners.hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET081/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/camp/lab/swantonc/working/watkint/data/brastianos/release/B_MET081/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
-  #opt<-parse_args(opt_parser,c('--patientId', 'B_LTX038', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/B_LTX038//exome/NeoAntigen/LOH/', '--normalBAMfile', '/farm/tracerx/lung/release_002.2/B_LTX038/exome/BAM/processed/B_LTX038_BS_GL.bam', '--BAMDir', '/farm/tracerx/lung/release_002.2/B_LTX038/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/B_LTX038/new_hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/farm/tracerx/lung/release_002.2/B_LTX038/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/farm/tracerx/lung/release_002.2/B_LTX038/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
-  #opt<-parse_args(opt_parser,c('--patientId', 'L_LTX110', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/L_LTX110//exome/NeoAntigen/LOH/', '--normalBAMfile', '/farm/tracerx/lung/release_002.2/L_LTX110/exome/BAM/processed/L_LTX110_BS_GL.bam', '--BAMDir', '/farm/tracerx/lung/release_002.2/L_LTX110/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/L_LTX110/new_hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/farm/tracerx/lung/release_002.2/L_LTX110/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/farm/tracerx/lung/release_002.2/L_LTX110/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
-  #opt<-parse_args(opt_parser,c('--patientId', 'R_LTX145', '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/R_LTX145//exome/NeoAntigen/LOH/', '--normalBAMfile', '/farm/tracerx/lung/release_002.2/R_LTX145/exome/BAM/processed/R_LTX145_BS_GL.bam', '--BAMDir', '/farm/tracerx/lung/release_002.2/R_LTX145/exome/BAM/processed/', '--hlaPath', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-wrong-hla/R_LTX145/new_hla.txt', '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta', '--CopyNumLoc', '/farm/tracerx/lung/release_002.2/R_LTX145/exome/ASCAT/solutions.txt', '--mappingStep', 'TRUE', '--cleanUp', 'TRUE', '--overrideDir', '/farm/tracerx/lung/release_002.2/R_LTX145/exome/QC/flagstat/', '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/', '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
   
 }
 
@@ -496,6 +473,12 @@ document.params(params, log.name)
 #############################
 
 BAMfiles  <- list.files(BAMDir, pattern = '.bam$')
+
+if(length(BAMfiles)<2)
+{
+  stop(paste('Cannot find 2 bam files within ',BAMDir))
+}
+
 regions   <- sapply(BAMfiles, FUN =function(x) {return(unlist(strsplit(x, split = '.bam'))[1])})
 
 hlaAlleles <- read.table(hlaPath, sep = '\t', header = FALSE, as.is = TRUE)
@@ -1124,8 +1107,13 @@ for (region in regions)
       if(performIntegerCopyNum)
       {
         copyNumSolutions           <- read.table(CopyNumLoc,sep="\t",header=TRUE,stringsAsFactors=FALSE)
-        tumorPloidy                <- copyNumSolutions[region,'psi']
-        tumorPurity                <- copyNumSolutions[region,'Cellularity']
+        if(!'tumorPurity'%in%colnames(copyNumSolutions)|!'tumorPloidy'%in%colnames(copyNumSolutions))
+        {
+          stop(paste('column names tumorPloidy and tumorPurity are needed within',CopyNumLoc,'if you wish to perform integer copy number',sep=""))
+        }
+        
+        tumorPloidy                <- copyNumSolutions[region,'tumorPloidy']
+        tumorPurity                <- copyNumSolutions[region,'tumorPurity']
         
            
         # infer copy number using combined BAF and logR
