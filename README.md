@@ -29,7 +29,7 @@ Within R, the following packages are required:
 
 ### How do I install LOHHLA? ###
 
-To install LOHHLA, simple clone the repository:
+To install LOHHLA, simply clone the repository:
 
 git clone https://nmcgranahan@bitbucket.org/mcgranahanlab/lohhla.git
 
