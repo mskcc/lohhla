@@ -30,7 +30,9 @@ Within R, the following packages are required:
 
 ### How do I run LOHHLA? ###
 
-LOHHLA is coded in R, and should be executed from the command line (Terminal, in Linux/UNIX/OSX, or Command Prompt in MS Windows). 
+LOHHLA is coded in R, and can be executed from the command line (Terminal, in Linux/UNIX/OSX, or Command Prompt in MS Windows) directly, 
+or using a shell script (see example below).
+
 Running LOHHLA with no arguments prints the usage information. 
 
 USAGE: Rscript /location/of/LOHHLA/script  [OPTIONS]
@@ -98,8 +100,7 @@ File paths must be full paths. Run "example.sh" and the output should match that
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+If you have any issues with lohhla, please send an email to lohhla@gmail.com
 
 ### How do I cite LOHHLA ? ###
 
