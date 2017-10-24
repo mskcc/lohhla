@@ -1,2 +1,0 @@
-Ploidy	Cellularity	psi	goodnessOfFit
-example_tumor_sorted	2	0.8	1.8	98.4349022308913
