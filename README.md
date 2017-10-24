@@ -117,7 +117,7 @@ OPTIONS:
 Example data is included in the LOHHLA repository. To run LOHHLA on the example dataset, alter the "example.sh" script to match your local file structure and ensure the requisite dependencies are available / loaded.
 The --HLAfastaLoc, --gatkDir, and --novoDir file paths should also be updated to the corresponding locations.
 File paths must be full paths. Run "example.sh" and the output should match that found in the "correct-example-out" directory provided.
-
+All BAM files (normal and tumour) should be found in or linked to the same directory.
 
 ### Who do I talk to? ###
 
