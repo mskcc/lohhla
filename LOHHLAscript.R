@@ -1478,7 +1478,7 @@ for (region in regions)
   {
     write.table(paste('\nplotting for region: ', region, ' at ', date(), '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
     pdf(paste(figureDir,region,".minCoverage_",minCoverageFilter,".HLA.pdf",sep=""),width=10,height=6)
-    for (HLA_gene in c('hla_a','hla_b','hla_c'))
+    for (HLA_gene in unique(substr(hlaAlleles, 1,5)))
     {
 
       if(file.exists(paste(figureDir, region, '.', HLA_gene, '.tmp.data.plots.RData', sep = ''))){
