@@ -1,0 +1,24 @@
+# novoalign (V3.07.00 - Build Feb  7 2017 @ 14:09:01) - A short read aligner with qualities.
+# (C) 2008-2016 Novocraft Technologies Sdn Bhd.
+# License file: 
+# Licensed for evaluation, educational, and not-for-profit use only.
+#  novoalign -d /camp/lab/swantonc/working/rosentr/scripts/my-example-out/example.patient.hlaFasta.nix -f /camp/lab/swantonc/working/rosentr/scripts/my-example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.1.fastq /camp/lab/swantonc/working/rosentr/scripts/my-example-out//example_BS_GL_sorted/example_BS_GL_sorted.chr6region.2.fastq -F STDFQ -R 0 -r All 9999 -o SAM -o FullNW
+# Starting at Tue Oct 24 17:27:15 2017
+# Interpreting input files as Sanger FASTQ.
+# Index Build Version: 3.7
+#   Hash length:    9
+#     Step size:    1
+#       Paired Reads:     1989
+#       Proper Pairs:     1989 (100.0%)
+#     Read Sequences:     3978
+#   Unique Alignment:     3866 (97.2%)
+#       Multi Mapped:      112 ( 2.8%)
+#   No Mapping Found:        0 ( 0.0%)
+#       Elapsed Time: 0.483 (secs.)
+#           CPU Time: 0.48 (secs.)
+# Fragment Length Distribution
+#	From	To	Count
+#	225	239	3
+#	240	254	1351
+# Mean   247, Std Dev   0.7
+# Done at Tue Oct 24 17:27:16 2017
