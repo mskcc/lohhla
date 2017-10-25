@@ -63,7 +63,7 @@ OPTIONS:
 		location to patient HLA calls
 
 	-hlaLoc CHARACTER, --HLAfastaLoc=CHARACTER
-		location of HLA FASTA [default= /farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta]
+		location of HLA FASTA [default=~/lohhla/data/hla_all.fasta]
 
 	-cn CHARACTER, --CopyNumLoc=CHARACTER
 		location to patient purity and ploidy output
@@ -103,7 +103,7 @@ OPTIONS:
 		path to GATK executable [default= ]
 
 	-ex CHARACTER, --HLAexonLoc=CHARACTER
-		HLA exon boundaries for plotting [default= /camp/lab/swantonc/working/rosentr/data/IMGT/hla.dat]
+		HLA exon boundaries for plotting [default=~/lohhla/datahla.dat]
 
 	-w CHARACTER, --ignoreWarnings=CHARACTER
 		continue running with warnings [default= TRUE]
