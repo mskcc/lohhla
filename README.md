@@ -103,7 +103,7 @@ OPTIONS:
 		path to GATK executable [default= ]
 
 	-ex CHARACTER, --HLAexonLoc=CHARACTER
-		HLA exon boundaries for plotting [default=~/lohhla/datahla.dat]
+		HLA exon boundaries for plotting [default=~/lohhla/data/hla.dat]
 
 	-w CHARACTER, --ignoreWarnings=CHARACTER
 		continue running with warnings [default= TRUE]
