@@ -18,7 +18,7 @@ option_list = list(
               help="location of all BAMs to test", metavar="character"),
   make_option(c("-hla", "--hlaPath"), type="character", default=NULL, 
               help="location to patient HLA calls", metavar="character"),
-  make_option(c("-hlaLoc", "--HLAfastaLoc"), type="character", default="/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta", 
+  make_option(c("-hlaLoc", "--HLAfastaLoc"), type="character", default='~/lohhla/data/hla_all.fasta', 
               help="location of HLA FASTA [default= %default]", metavar="character"),
   make_option(c("-cn", "--CopyNumLoc"), type="character", default="FALSE", 
               help="location to patient purity and ploidy output\n\t\tcan be FALSE to only estimate allelic imbalance", metavar="character"),
@@ -44,7 +44,7 @@ option_list = list(
               help="path to novoalign executable [default= %default]", metavar="character"),
   make_option(c("-ga", "--gatkDir"), type="character", default='', 
               help="path to GATK executable [default= %default]", metavar="character"),
-  make_option(c("-ex", "--HLAexonLoc"), type="character", default='/camp/lab/swantonc/working/rosentr/data/IMGT/hla.dat', 
+  make_option(c("-ex", "--HLAexonLoc"), type="character", default='~/lohhla/data/hla.dat', 
               help="HLA exon boundaries for plotting [default= %default]", metavar="character"),
   make_option(c("-w", "--ignoreWarnings"), type="logical", default=TRUE, 
               help="continue running with warnings [default= %default]", metavar="character")
@@ -2018,16 +2018,16 @@ if(cleanUp)
 {
 
   cmd <- paste('rm ', workDir, '*tumor*', sep = '')
-  # system(cmd)
+  system(cmd)
 
   cmd <- paste('rm ', workDir, '*normal*', sep = '')
-  # system(cmd)
+  system(cmd)
 
   cmd <- paste('rm ', workDir, '*/*sam', sep = '')
   system(cmd)
 
   cmd <- paste('rm ', workDir, '*/*fastq', sep = '')
-  #system(cmd)
+  system(cmd)
 
   cmd <- paste('rm ', workDir, '*/*reads', sep = '')
   system(cmd)
@@ -2045,10 +2045,10 @@ if(cleanUp)
   system(cmd)
 
   cmd <- paste('rm ', workDir, '*/*type*[0-9].bam', sep = '')
-  # system(cmd)
+  system(cmd)
 
   cmd <- paste('rm ', workDir, '*/*type*[0-9].bam.bai', sep = '')
-  # system(cmd)
+  system(cmd)
 
 }
 

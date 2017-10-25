@@ -13,7 +13,7 @@ module load Jellyfish/2.2.6-foss-2016b
 #alias bedtools=/path/to/bedtools
 
 
-Rscript /location/of/lohhla/repository/lohhla/LOHHLAscript.R --patientId example --outputDir /camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-example-file/example-out/ --normalBAMfile /location/of/lohhla/repository/lohhla/example-file/bam/example_BS_GL_sorted.bam --BAMDir /location/of/lohhla/repository/lohhla/example-file/bam/  --hlaPath /location/of/lohhla/repository/lohhla/example-file/hlas --HLAfastaLoc /farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta --CopyNumLoc /location/of/lohhla/repository/lohhla/example-file/solutions.txt --mappingStep TRUE --minCoverageFilter 10 --fishingStep TRUE --cleanUp FALSE --gatkDir /camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/ --novoDir /camp/apps/eb/software/novoalign/3.07.00/bin/
+Rscript /location/of/lohhla/repository/lohhla/LOHHLAscript.R --patientId example --outputDir /out/example-out/ --normalBAMfile /location/of/lohhla/repository/lohhla/example-file/bam/example_BS_GL_sorted.bam --BAMDir /location/of/lohhla/repository/lohhla/example-file/bam/  --hlaPath /location/of/lohhla/repository/lohhla/example-file/hlas --HLAfastaLoc /location/of/lohhla/repository/data/hla_all.fasta --CopyNumLoc /location/of/lohhla/repository/lohhla/example-file/solutions.txt --mappingStep TRUE --minCoverageFilter 10 --fishingStep TRUE --cleanUp FALSE --gatkDir /your/GATK/bin/ --novoDir /your/novoalign/bin/
 
 
 
