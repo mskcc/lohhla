@@ -126,6 +126,47 @@ The most relavant columns are:
 	HLA_type2copyNum_withBAFBin          - the estimated raw copy number of HLA (allele 2)
 
 
+For a full definition of the columns, see below, in each case, whether the column should be used, or can be ignored, as a legacy, is indicated:
+
+	region								 - the region or tumor sample [use]
+	HLA_A_type1							 - the identity of allele 1 [use]
+	HLA_A_type2							 - the identity of allele 2 [use]
+	HLAtype1Log2MedianCoverage	         - the median LogR coverage across allele 1 [use] 
+	HLAtype2Log2MedianCoverage	         - the median LogR coverage across allele 2 [use]
+	HLAtype1Log2MedianCoverageAtSites	 - the median LogR coverage across allele 1, restricted to mismatch sites [use]
+	HLAtype2Log2MedianCoverageAtSites	 - the median LogR coverage across allele 2, restricted to mismatch sites [use]
+	HLA_type1copyNum_withoutBAF	         - estimated copy number of allele 1, without using BAF [legacy] 
+	HLA_type1copyNum_withoutBAF_lower	 - lower 95% confidence interval of estimated copy number of allele 1, without using BAF [legacy] 
+	HLA_type1copyNum_withoutBAF_upper	 - upper 95% confidence interval of estimated copy number of allele 1, without using BAF [legacy] 
+	HLA_type1copyNum_withBAF	         - estimated copy number of allele 1 using BAF, without binning sites [legacy] 
+	HLA_type1copyNum_withBAF_lower	     - lower 95% confidence interval of estimated copy number of allele 1 using BAF, without binning sites [legacy] 
+	HLA_type1copyNum_withBAF_upper	     - upper 95% confidence interval of estimated copy number of allele 1 using BAF, without binning sites [legacy] 
+	HLA_type2copyNum_withoutBAF	         - estimated copy number of allele 2 without using BAF  [legacy] 
+	HLA_type2copyNum_withoutBAF_lower	 - lower 95% confidence interval of estimated copy number of allele 2, without using BAF [legacy] 
+	HLA_type2copyNum_withoutBAF_upper	 - upper 95% confidence interval of estimated copy number of allele 2, without using BAF [legacy] 
+	HLA_type2copyNum_withBAF	         - estimated copy number of allele 2 using BAF, without binning sites [legacy] 
+	HLA_type2copyNum_withBAF_lower	     - lower 95% confidence interval of estimated copy number of allele 1 using BAF, without binning sites [legacy] 
+	HLA_type2copyNum_withBAF_upper	     - lower 95% confidence interval of estimated copy number of allele 1 using BAF, without binning sites [legacy] 
+	HLA_type1copyNum_withoutBAFBin	
+	HLA_type1copyNum_withoutBAFBin_lower	
+	HLA_type1copyNum_withoutBAFBin_upper	
+	HLA_type1copyNum_withBAFBin	
+	HLA_type1copyNum_withBAFBin_lower	
+	HLA_type1copyNum_withBAFBin_upper	
+	HLA_type2copyNum_withoutBAFBin	
+	HLA_type2copyNum_withoutBAFBin_lower	
+	HLA_type2copyNum_withoutBAFBin_upper	
+	HLA_type2copyNum_withBAFBin	
+	HLA_type2copyNum_withBAFBin_lower	
+	HLA_type2copyNum_withBAFBin_upper	
+	PVal
+	UnPairedPval	
+	PVal_unique	
+	UnPairedPval_unique
+	LossAllele	
+	KeptAllele
+	numMisMatchSitesCov
+	propSupportiveSites
 
 
 ### How can I test if LOHHLA is working? ###
