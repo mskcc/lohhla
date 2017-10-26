@@ -159,14 +159,14 @@ For a full definition of the columns, see below, in each case whether the column
 	HLA_type2copyNum_withBAFBin	         - estimated copy number of allele 2 using binning and BAF [use] 
 	HLA_type2copyNum_withBAFBin_lower	 - lower 95% confidence interval of estimated copy number of allele 2 using binning and BAF [use] 
 	HLA_type2copyNum_withBAFBin_upper	 - upper 95% confidence interval of estimated copy number of allele 2 using binning and BAF [use
-	PVal                                 - p-value relating to difference in logR between allele 1 and allele 2 (paired t-test)
-	UnPairedPval	                     - p-value relating to difference in logR between allele 1 and allele 2 (unpaired t-test)
-	PVal_unique	                         - p-value relating to difference in logR between allele 1 and allele 2, ensuring each read only contributes once (paired t-test)
-	UnPairedPval_unique                  - p-value relating to difference in logR between allele 1 and allele 2, ensuring each read only contributes once (unpaired t-test)
-	LossAllele	                         - HLA allele that is present at lower frequency (potentially subject to loss)
-	KeptAllele                           - HLA allele that is present at higher frequency (potentially not subject to loss)
-	numMisMatchSitesCov                  - number of mismatch sites with sufficient coverage
-	propSupportiveSites                  - proportion of missmatch sites that are consistent with loss or allelic imbalance
+	PVal                                 - p-value relating to difference in logR between allele 1 and allele 2 (paired t-test)[legacy]
+	UnPairedPval	                     - p-value relating to difference in logR between allele 1 and allele 2 (unpaired t-test)[legacy]
+	PVal_unique	                         - p-value relating to difference in logR between allele 1 and allele 2, ensuring each read only contributes once (paired t-test) [use]
+	UnPairedPval_unique                  - p-value relating to difference in logR between allele 1 and allele 2, ensuring each read only contributes once (unpaired t-test) [use]
+	LossAllele	                         - HLA allele that is present at lower frequency (potentially subject to loss) [use]
+	KeptAllele                           - HLA allele that is present at higher frequency (potentially not subject to loss) [use]
+	numMisMatchSitesCov                  - number of mismatch sites with sufficient coverage [use]
+	propSupportiveSites                  - proportion of missmatch sites that are consistent with loss or allelic imbalance [use]
 
 
 ### How can I test if LOHHLA is working? ###
