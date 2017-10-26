@@ -115,7 +115,8 @@ OPTIONS:
 ### What is the output of LOHHLA? ###
 
 LOHHLA produces multiple different files (see correct-example-out for an example). To determine HLA LOH in a given sample, the most relevant output is the file which ends '.HLAlossPrediction_CI.xls'. 
-_this files 
+_The most relavant columns are:
+_PVal_ _ _unique_ 
 
 ### How can I test if LOHHLA is working? ###
 
