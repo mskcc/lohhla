@@ -126,7 +126,7 @@ The most relavant columns are:
 	HLA_type2copyNum_withBAFBin          - the estimated raw copy number of HLA (allele 2)
 
 
-For a full definition of the columns, see below, in each case, whether the column should be used, or can be ignored, as a legacy, is indicated:
+For a full definition of the columns, see below, in each case whether the column should be used [use], or can be ignored [legacy]is indicated:
 
 	region								 - the region or tumor sample [use]
 	HLA_A_type1							 - the identity of allele 1 [use]
@@ -146,27 +146,27 @@ For a full definition of the columns, see below, in each case, whether the colum
 	HLA_type2copyNum_withoutBAF_upper	 - upper 95% confidence interval of estimated copy number of allele 2, without using BAF [legacy] 
 	HLA_type2copyNum_withBAF	         - estimated copy number of allele 2 using BAF, without binning sites [legacy] 
 	HLA_type2copyNum_withBAF_lower	     - lower 95% confidence interval of estimated copy number of allele 1 using BAF, without binning sites [legacy] 
-	HLA_type2copyNum_withBAF_upper	     - lower 95% confidence interval of estimated copy number of allele 1 using BAF, without binning sites [legacy] 
-	HLA_type1copyNum_withoutBAFBin	
-	HLA_type1copyNum_withoutBAFBin_lower	
-	HLA_type1copyNum_withoutBAFBin_upper	
-	HLA_type1copyNum_withBAFBin	
-	HLA_type1copyNum_withBAFBin_lower	
-	HLA_type1copyNum_withBAFBin_upper	
-	HLA_type2copyNum_withoutBAFBin	
-	HLA_type2copyNum_withoutBAFBin_lower	
-	HLA_type2copyNum_withoutBAFBin_upper	
-	HLA_type2copyNum_withBAFBin	
-	HLA_type2copyNum_withBAFBin_lower	
-	HLA_type2copyNum_withBAFBin_upper	
-	PVal
-	UnPairedPval	
-	PVal_unique	
-	UnPairedPval_unique
-	LossAllele	
-	KeptAllele
-	numMisMatchSitesCov
-	propSupportiveSites
+	HLA_type2copyNum_withBAF_upper	     - upper 95% confidence interval of estimated copy number of allele 1 using BAF, without binning sites [legacy] 
+	HLA_type1copyNum_withoutBAFBin	     - estimated copy number of allele 1 using binning, but without BAF [legacy]  
+	HLA_type1copyNum_withoutBAFBin_lower - lower 95% confidence interval of estimated copy number of allele 1 using binning, but without BAF [legacy]  	
+	HLA_type1copyNum_withoutBAFBin_upper - upper 95% confidence interval of estimated copy number of allele 1 using binning, but without BAF [legacy] 	
+	HLA_type1copyNum_withBAFBin	         - estimated copy number of allele 1 using binning and BAF [use] 
+	HLA_type1copyNum_withBAFBin_lower	 - lower 95% confidence interval of estimated copy number of allele 1 using binning and BAF [use] 
+	HLA_type1copyNum_withBAFBin_upper	 - upper 95% confidence interval of estimated copy number of allele 1 using binning and BAF [use]  
+	HLA_type2copyNum_withoutBAFBin	     - estimated copy number of allele 2 using binning, but without BAF [legacy]  
+	HLA_type2copyNum_withoutBAFBin_lower - lower 95% confidence interval of estimated copy number of allele 2 using binning, but without BAF [legacy]	
+	HLA_type2copyNum_withoutBAFBin_upper - upper 95% confidence interval of estimated copy number of allele 2 using BAF, without binning sites [legacy] 	
+	HLA_type2copyNum_withBAFBin	         - estimated copy number of allele 2 using binning and BAF [use] 
+	HLA_type2copyNum_withBAFBin_lower	 - lower 95% confidence interval of estimated copy number of allele 2 using binning and BAF [use] 
+	HLA_type2copyNum_withBAFBin_upper	 - upper 95% confidence interval of estimated copy number of allele 2 using binning and BAF [use
+	PVal                                 - p-value relating to difference in logR between allele 1 and allele 2 (paired t-test)
+	UnPairedPval	                     - p-value relating to difference in logR between allele 1 and allele 2 (unpaired t-test)
+	PVal_unique	                         - p-value relating to difference in logR between allele 1 and allele 2, ensuring each read only contributes once (paired t-test)
+	UnPairedPval_unique                  - p-value relating to difference in logR between allele 1 and allele 2, ensuring each read only contributes once (unpaired t-test)
+	LossAllele	                         - HLA allele that is present at lower frequency (potentially subject to loss)
+	KeptAllele                           - HLA allele that is present at higher frequency (potentially not subject to loss)
+	numMisMatchSitesCov                  - number of mismatch sites with sufficient coverage
+	propSupportiveSites                  - proportion of missmatch sites that are consistent with loss or allelic imbalance
 
 
 ### How can I test if LOHHLA is working? ###
