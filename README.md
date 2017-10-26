@@ -112,6 +112,11 @@ OPTIONS:
 		Show this help message and exit            
  
 
+### What is the output of LOHHLA? ###
+
+LOHHLA produces multiple different files (see correct-example-out for an example). To determine HLA LOH in a given sample, the most relevant output is the file which ends '.HLAlossPrediction_CI.xls'. 
+_this files 
+
 ### How can I test if LOHHLA is working? ###
 
 Example data is included in the LOHHLA repository. To run LOHHLA on the example dataset, alter the "example.sh" script to match your local file structure and ensure the requisite dependencies are available / loaded.
