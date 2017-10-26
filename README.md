@@ -115,8 +115,15 @@ OPTIONS:
 ### What is the output of LOHHLA? ###
 
 LOHHLA produces multiple different files (see correct-example-out for an example). To determine HLA LOH in a given sample, the most relevant output is the file which ends '.HLAlossPrediction_CI.xls'. 
-_The most relavant columns are:
-_PVal_ _ _unique_ 
+The most relavant columns are:
+
+_PVal_ _ _unique_  					 - this is a p-value relating to allelic imbalance
+_LossAllele_      					 - this corresponds to the HLA allele that is subject to loss
+_KeptAllele_      					 - this corresponds to the HLA allele that is not subject to loss
+_HLA_type1copyNum_withBAFBin_        - the estimated raw copy number of HLA (allele 1)
+_HLA_type2copyNum_withBAFBin_        - the estimated raw copy number of HLA (allele 2)
+_HLA_A_type1_						 - the identity of allele 1
+_HLA_A_type2_						 - the identity of allele 2
 
 ### How can I test if LOHHLA is working? ###
 
