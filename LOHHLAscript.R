@@ -81,8 +81,8 @@ coverageStep      <- opt$coverageStep
 plottingStep      <- opt$plottingStep
 ignoreWarnings    <- opt$ignoreWarnings
 
-print(coverageStep)
-print(plottingStep)
+#print(coverageStep)
+#print(plottingStep)
 
 if (is.null(opt$BAMDir) | is.null(opt$outputDir) | is.null(opt$hlaPath) | is.null(opt$HLAfastaLoc)){
   print_help(opt_parser)
@@ -122,6 +122,19 @@ if(interactive)
                                , '--mappingStep', 'TRUE'
                                , '--cleanUp', 'TRUE'
                                , '--overrideDir', '/camp/lab/swantonc/working/mcgrann/projects/LOHproject/kidney_run/G_K107/flagstat/'
+                               , '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/'
+                               , '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
+
+  opt<-parse_args(opt_parser,c('--patientId', 'G_K107'
+                               , '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/'
+                               , '--normalBAMfile', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/BAMs/B1d1xx1.bam'
+                               , '--BAMDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/BAMs/'
+                               , '--hlaPath', '/camp/project/tracerX/working/CRENAL/OUTPUT/G_K107/Rabbit_Hole_Exome/MERGED/POLYSOLVER/HLA_Type/winners.hla.txt'
+                               , '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta'
+                               , '--CopyNumLoc', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/copyNumSolutions.txt'
+                               , '--mappingStep', 'TRUE'
+                               , '--cleanUp', 'TRUE'
+                               , '--overrideDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/flagstat/'
                                , '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/'
                                , '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
   
@@ -745,6 +758,8 @@ for (region in regions)
 
 # also extract number of unique reads sequenced in tumor and normal
 if(runWithNormal){
+
+  normalName <- regions[which(paste(BAMDir, regions, '.bam', sep = '') == normalBAMfile)]
   
   if(!override){
     regionUniqMappedRegions <- getUniqMapReads(workDir = workDir, BAMDir = BAMDir, override = FALSE)
@@ -754,7 +769,8 @@ if(runWithNormal){
   }
 
   # this will need to change if normal BAM doesn't have GL in name
-  GermLineUniqMappedReads <- regionUniqMappedRegions[[grep("GL",names(regionUniqMappedRegions),value=TRUE)]]
+  #GermLineUniqMappedReads <- regionUniqMappedRegions[[grep("GL",names(regionUniqMappedRegions),value=TRUE)]]
+  GermLineUniqMappedReads <- regionUniqMappedRegions[[grep(normalName,names(regionUniqMappedRegions),value=TRUE)]]
 
 }
 
@@ -978,14 +994,15 @@ for (region in regions)
         }
 
         #get the coverage for the sites
-        HLA_type1tumor_nomissmatch <- read.table(paste(workDir,region,".",HLA_A_type1,".tumor.NoMissMatch.pileup",sep=""),stringsAsFactors=FALSE,fill=TRUE,quote="", sep = '\t')
-        HLA_type2tumor_nomissmatch <- read.table(paste(workDir,region,".",HLA_A_type2,".tumor.NoMissMatch.pileup",sep=""),stringsAsFactors=FALSE,fill=TRUE,quote="", sep = '\t')
+        HLA_type1tumor_nomissmatch <- tryCatch(read.table(paste(workDir,region,".",HLA_A_type1,".tumor.NoMissMatch.pileup",sep=""),stringsAsFactors=FALSE,fill=TRUE,quote="", sep = '\t'), error=function(e) NULL)
+        HLA_type2tumor_nomissmatch <- tryCatch(read.table(paste(workDir,region,".",HLA_A_type2,".tumor.NoMissMatch.pileup",sep=""),stringsAsFactors=FALSE,fill=TRUE,quote="", sep = '\t'), error=function(e) NULL)
 
         if(runWithNormal){
-          HLA_type1normal_nomissmatch <- read.table(paste(workDir,region,".",HLA_A_type1,".normal.NoMissMatch.pileup",sep=""),stringsAsFactors=FALSE,fill=TRUE,quote="", sep = '\t')
-          HLA_type2normal_nomissmatch <- read.table(paste(workDir,region,".",HLA_A_type2,".normal.NoMissMatch.pileup",sep=""),stringsAsFactors=FALSE,fill=TRUE,quote="", sep = '\t')
+          HLA_type1normal_nomissmatch <- tryCatch(read.table(paste(workDir,region,".",HLA_A_type1,".normal.NoMissMatch.pileup",sep=""),stringsAsFactors=FALSE,fill=TRUE,quote="", sep = '\t'), error=function(e) NULL)
+          HLA_type2normal_nomissmatch <- tryCatch(read.table(paste(workDir,region,".",HLA_A_type2,".normal.NoMissMatch.pileup",sep=""),stringsAsFactors=FALSE,fill=TRUE,quote="", sep = '\t'), error=function(e) NULL)
         }
 
+        # make a dummy one if there isn't a normal
         if(!runWithNormal){
           HLA_type1normal_nomissmatch <-  data.frame(cbind(HLA_A_type1, 1:length(HLA_type1Fasta), toupper(HLA_type1Fasta), minCoverageFilter+1), stringsAsFactors=FALSE)
           HLA_type1normal_nomissmatch$V4 <- as.numeric(HLA_type1normal_nomissmatch$V4)
@@ -993,38 +1010,47 @@ for (region in regions)
           HLA_type2normal_nomissmatch$V4 <- as.numeric(HLA_type2normal_nomissmatch$V4)
         }
 
-        rownames(HLA_type1tumor_nomissmatch) <- HLA_type1tumor_nomissmatch$V2
-        rownames(HLA_type1normal_nomissmatch) <- HLA_type1normal_nomissmatch$V2
-        rownames(HLA_type2tumor_nomissmatch) <- HLA_type2tumor_nomissmatch$V2
-        rownames(HLA_type2normal_nomissmatch) <- HLA_type2normal_nomissmatch$V2
-        
-        #apply minimum coverage thresholds (we only apply this to the normal for now)
-        HLA_type1normal_nomissmatch <- HLA_type1normal_nomissmatch[HLA_type1normal_nomissmatch$V4>minCoverageFilter,,drop=FALSE]
-        HLA_type2normal_nomissmatch <- HLA_type2normal_nomissmatch[HLA_type2normal_nomissmatch$V4>minCoverageFilter,,drop=FALSE]
-        
-        tmp <- intersect(rownames(HLA_type1tumor_nomissmatch),rownames(HLA_type1normal_nomissmatch))
-        HLA_type1tumor_nomissmatch  <- HLA_type1tumor_nomissmatch[tmp,,drop=FALSE]
-        
-        tmp <- intersect(rownames(HLA_type2tumor_nomissmatch),rownames(HLA_type2normal_nomissmatch))
-        HLA_type2tumor_nomissmatch  <- HLA_type2tumor_nomissmatch[tmp,,drop=FALSE]
-        
-        HLA_type2normal_nomissmatchCov <- HLA_type2normal_nomissmatch$V4
-        names(HLA_type2normal_nomissmatchCov) <- HLA_type2normal_nomissmatch$V2
-        
-        HLA_type1normal_nomissmatchCov <- HLA_type1normal_nomissmatch$V4
-        names(HLA_type1normal_nomissmatchCov) <- HLA_type1normal_nomissmatch$V2 
-        
-        HLA_type2tumor_nomissmatchCov <- rep(0,length(HLA_type2normal_nomissmatchCov))      
-        names(HLA_type2tumor_nomissmatchCov) <- names(HLA_type2normal_nomissmatchCov)
-        HLA_type2tumor_nomissmatchCov[rownames(HLA_type2tumor_nomissmatch)] <- HLA_type2tumor_nomissmatch$V4
-        
-        HLA_type1tumor_nomissmatchCov <- rep(0,length(HLA_type1normal_nomissmatchCov))      
-        names(HLA_type1tumor_nomissmatchCov) <- names(HLA_type1normal_nomissmatchCov)
-        HLA_type1tumor_nomissmatchCov[rownames(HLA_type1tumor_nomissmatch)] <- HLA_type1tumor_nomissmatch$V4
+        # error if non-mismatch file is empty
+        # can probably work around missing non-mismatches later...
+        if(is.null(HLA_type1tumor_nomissmatch) | is.null(HLA_type2tumor_nomissmatch) | is.null(HLA_type1normal_nomissmatch) | is.null(HLA_type2normal_nomissmatch)){
+          msg <- paste('No non-mismatch positions for ', HLA_gene, sep = '')
+          write.table(paste('\n', msg, '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
+          next
+        } else{
+
+          rownames(HLA_type1tumor_nomissmatch) <- HLA_type1tumor_nomissmatch$V2
+          rownames(HLA_type1normal_nomissmatch) <- HLA_type1normal_nomissmatch$V2
+          rownames(HLA_type2tumor_nomissmatch) <- HLA_type2tumor_nomissmatch$V2
+          rownames(HLA_type2normal_nomissmatch) <- HLA_type2normal_nomissmatch$V2
+          
+          #apply minimum coverage thresholds (we only apply this to the normal for now)
+          HLA_type1normal_nomissmatch <- HLA_type1normal_nomissmatch[HLA_type1normal_nomissmatch$V4>minCoverageFilter,,drop=FALSE]
+          HLA_type2normal_nomissmatch <- HLA_type2normal_nomissmatch[HLA_type2normal_nomissmatch$V4>minCoverageFilter,,drop=FALSE]
+          
+          tmp <- intersect(rownames(HLA_type1tumor_nomissmatch),rownames(HLA_type1normal_nomissmatch))
+          HLA_type1tumor_nomissmatch  <- HLA_type1tumor_nomissmatch[tmp,,drop=FALSE]
+          
+          tmp <- intersect(rownames(HLA_type2tumor_nomissmatch),rownames(HLA_type2normal_nomissmatch))
+          HLA_type2tumor_nomissmatch  <- HLA_type2tumor_nomissmatch[tmp,,drop=FALSE]
+          
+          HLA_type2normal_nomissmatchCov <- HLA_type2normal_nomissmatch$V4
+          names(HLA_type2normal_nomissmatchCov) <- HLA_type2normal_nomissmatch$V2
+          
+          HLA_type1normal_nomissmatchCov <- HLA_type1normal_nomissmatch$V4
+          names(HLA_type1normal_nomissmatchCov) <- HLA_type1normal_nomissmatch$V2 
+          
+          HLA_type2tumor_nomissmatchCov <- rep(0,length(HLA_type2normal_nomissmatchCov))      
+          names(HLA_type2tumor_nomissmatchCov) <- names(HLA_type2normal_nomissmatchCov)
+          HLA_type2tumor_nomissmatchCov[rownames(HLA_type2tumor_nomissmatch)] <- HLA_type2tumor_nomissmatch$V4
+          
+          HLA_type1tumor_nomissmatchCov <- rep(0,length(HLA_type1normal_nomissmatchCov))      
+          names(HLA_type1tumor_nomissmatchCov) <- names(HLA_type1normal_nomissmatchCov)
+          HLA_type1tumor_nomissmatchCov[rownames(HLA_type1tumor_nomissmatch)] <- HLA_type1tumor_nomissmatch$V4
+
+        }
         
       }
       
-
 
       if(extractUniqueReads == TRUE) {
         
@@ -1106,174 +1132,187 @@ for (region in regions)
 
       if(performIntegerCopyNum)
       {
+        performIntegerCopyNumTmp   <- performIntegerCopyNum
         copyNumSolutions           <- read.table(CopyNumLoc,sep="\t",header=TRUE,stringsAsFactors=FALSE)
         if(!'tumorPurity'%in%colnames(copyNumSolutions)|!'tumorPloidy'%in%colnames(copyNumSolutions))
         {
-          stop(paste('column names tumorPloidy and tumorPurity are needed within',CopyNumLoc,'if you wish to perform integer copy number',sep=""))
-        }
-        
-        tumorPloidy                <- copyNumSolutions[region,'tumorPloidy']
-        tumorPurity                <- copyNumSolutions[region,'tumorPurity']
-        
-           
-        # infer copy number using combined BAF and logR
-        misMatchCoveredInBoth <- cbind(ifelse(missMatchPositions$diffSeq1%in%names(HLA_A_type1normalCov),1,0),ifelse(missMatchPositions$diffSeq2%in%names(HLA_A_type2normalCov),1,0))
-        missMatchseq1 <- missMatchPositions$diffSeq1[rowSums(misMatchCoveredInBoth)==2]
-        missMatchseq2 <- missMatchPositions$diffSeq2[rowSums(misMatchCoveredInBoth)==2]
-
-        #let's get bins to collect for the coverage estimates
-        startChar <- min(c(as.numeric(names(HLA_A_type1tumorCov))),as.numeric(names(HLA_A_type2tumorCov)))
-        endChar   <- max(c(as.numeric(names(HLA_A_type1tumorCov))),as.numeric(names(HLA_A_type2tumorCov)))
-        seqToConsider <- seq(startChar,endChar,by=binSize)
-        seqToConsider <- c(seqToConsider[-length(seqToConsider)],endChar+1)
-        
-        binLogR       <- c()
-        for (i in 1:(length(seqToConsider)-1))
-        {
-          
-          PotentialSites   <- as.character(seqToConsider[i]:seqToConsider[i+1])
-          combinedBinTumor  <- median(as.numeric(as.numeric(HLA_A_type1tumorCov[names(HLA_A_type1tumorCov)%in%PotentialSites])), na.rm = TRUE)+median(as.numeric(as.numeric(HLA_A_type2tumorCov[names(HLA_A_type2tumorCov)%in%PotentialSites])), na.rm = TRUE)
-          combinedBinNormal <- median(as.numeric(as.numeric(HLA_A_type1normalCov[names(HLA_A_type1normalCov)%in%PotentialSites])), na.rm= TRUE)+median(as.numeric(as.numeric(HLA_A_type2normalCov[names(HLA_A_type2normalCov)%in%PotentialSites])), na.rm = TRUE)
-          combinedBinlogR   <- log2(combinedBinTumor/combinedBinNormal*MultFactor)
-          type1BinlogR     <- median(log2(as.numeric(as.numeric(HLA_A_type1tumorCov[names(HLA_A_type1tumorCov)%in%PotentialSites])/as.numeric(HLA_A_type1normalCov[names(HLA_A_type1normalCov)%in%PotentialSites])*MultFactor)), na.rm = TRUE)
-          type2BinlogR     <- median(log2(as.numeric(as.numeric(HLA_A_type2tumorCov[names(HLA_A_type2tumorCov)%in%PotentialSites])/as.numeric(HLA_A_type2normalCov[names(HLA_A_type2normalCov)%in%PotentialSites])*MultFactor)), na.rm = TRUE)
-          binLogR <- rbind(binLogR,cbind(seqToConsider[i],seqToConsider[i+1],combinedBinlogR,type1BinlogR,type2BinlogR))
+          howToWarn(paste('column names tumorPloidy and tumorPurity are needed within',CopyNumLoc,' if you wish to perform integer copy number',sep=""))
+          performIntegerCopyNumTmp <- FALSE
         }
 
+        if(!region %in% rownames(copyNumSolutions)){
+          howToWarn(paste('row names of ',CopyNumLoc,' must match region (sample) names if you wish to perform integer copy number\nskipping region: ', region,sep="")) 
+          performIntegerCopyNumTmp <- FALSE
+        }
+        
+        if(performIntegerCopyNumTmp){
+          tumorPloidy                <- copyNumSolutions[region,'tumorPloidy']
+          tumorPurity                <- copyNumSolutions[region,'tumorPurity']
+        }
 
-        tmpOut_cn <- cbind(missMatchseq1
-                        ,log2(c(HLA_A_type1tumorCov/HLA_A_type1normalCov)*MultFactor)[as.character(missMatchseq1)]
-                        ,HLA_A_type1tumorCov[as.character(missMatchseq1)]
-                        ,missMatchseq2
-                       ,log2(c(HLA_A_type2tumorCov/HLA_A_type2normalCov)*MultFactor)[as.character(missMatchseq2)]
-                       ,HLA_A_type2tumorCov[as.character(missMatchseq2)]
-                       ,HLA_A_type1normalCov[as.character(missMatchseq1)]
-                       ,HLA_A_type2normalCov[as.character(missMatchseq2)]
-                       )
-        colnames(tmpOut_cn) <- c('missMatchseq1','logR_type1','TumorCov_type1','missMatchseq2','logR_type2','TumorCov_type2','NormalCov_type1','NormalCov_type2')
+        if(!performIntegerCopyNumTmp){
+          tumorPloidy                <- NA
+          tumorPurity                <- NA
+        }
+
+      }
+         
+      # infer copy number using combined BAF and logR
+      misMatchCoveredInBoth <- cbind(ifelse(missMatchPositions$diffSeq1%in%names(HLA_A_type1normalCov),1,0),ifelse(missMatchPositions$diffSeq2%in%names(HLA_A_type2normalCov),1,0))
+      missMatchseq1 <- missMatchPositions$diffSeq1[rowSums(misMatchCoveredInBoth)==2]
+      missMatchseq2 <- missMatchPositions$diffSeq2[rowSums(misMatchCoveredInBoth)==2]
+
+      #let's get bins to collect for the coverage estimates
+      startChar <- min(c(as.numeric(names(HLA_A_type1tumorCov))),as.numeric(names(HLA_A_type2tumorCov)))
+      endChar   <- max(c(as.numeric(names(HLA_A_type1tumorCov))),as.numeric(names(HLA_A_type2tumorCov)))
+      seqToConsider <- seq(startChar,endChar,by=binSize)
+      seqToConsider <- c(seqToConsider[-length(seqToConsider)],endChar+1)
       
+      binLogR       <- c()
+      for (i in 1:(length(seqToConsider)-1))
+      {
         
-        dup1   <- unique(tmpOut_cn[duplicated(tmpOut_cn[,1]),1])
-        dup2   <- unique(tmpOut_cn[duplicated(tmpOut_cn[,4]),4])
-        
-        for(duplicationIn1 in dup1)
-        {
-          tmpOut_cn[tmpOut_cn[,1]==duplicationIn1,'TumorCov_type2']  <- mean(tmpOut_cn[tmpOut_cn[,1]==duplicationIn1,'TumorCov_type2'])
-          tmpOut_cn[tmpOut_cn[,1]==duplicationIn1,'NormalCov_type2'] <- mean(tmpOut_cn[tmpOut_cn[,1]==duplicationIn1,'NormalCov_type2'])  
-          tmpOut_cn[tmpOut_cn[,1]==duplicationIn1,'logR_type2']      <- mean(tmpOut_cn[tmpOut_cn[,1]==duplicationIn1,'logR_type2'])  
-        }
-        
-        for(duplicationIn2 in dup2)
-        {
-          tmpOut_cn[tmpOut_cn[,4]==duplicationIn2,'TumorCov_type1']  <- mean(tmpOut_cn[tmpOut_cn[,4]==duplicationIn2,'TumorCov_type1'])
-          tmpOut_cn[tmpOut_cn[,4]==duplicationIn2,'NormalCov_type1'] <- mean(tmpOut_cn[tmpOut_cn[,4]==duplicationIn2,'NormalCov_type1'])  
-          tmpOut_cn[tmpOut_cn[,4]==duplicationIn2,'logR_type1']      <- mean(tmpOut_cn[tmpOut_cn[,4]==duplicationIn2,'logR_type1'])   
-        }
-        
-        tmpOut_cn  <- tmpOut_cn[!duplicated(tmpOut_cn[,1]),,drop=FALSE]
-        tmpOut_cn  <- tmpOut_cn[!duplicated(tmpOut_cn[,4]),,drop=FALSE]
-        colnames(tmpOut_cn) <- c('missMatchseq1','logR_type1','TumorCov_type1','missMatchseq2','logR_type2','TumorCov_type2','NormalCov_type1','NormalCov_type2')
-
-
-        combinedTable <- data.frame(tmpOut_cn,stringsAsFactors=FALSE)
-        combinedTable$logRcombined <- log2(((combinedTable$TumorCov_type1+combinedTable$TumorCov_type2)/(combinedTable$NormalCov_type1+combinedTable$NormalCov_type2))*MultFactor)
-        combinedTable$BAFcombined  <- combinedTable$TumorCov_type1/(combinedTable$TumorCov_type1+combinedTable$TumorCov_type2)
-
-        if(nrow(combinedTable) != 0){
-          combinedTable$binlogRCombined <- NA
-          combinedTable$binlogRtype1    <- NA
-          combinedTable$binlogRtype2    <- NA
-          combinedTable$binNum          <- NA
-
-          # next, add the binLogR to this table
-          for (i in 1:nrow(combinedTable))
-          {
-            combinedTable[i,]$binlogRCombined <- binLogR[which(binLogR[,1]<=as.numeric(combinedTable$missMatchseq1[i])&binLogR[,2]>as.numeric(combinedTable$missMatchseq1[i])),3]
-            combinedTable[i,]$binlogRtype1   <- binLogR[which(binLogR[,1]<=as.numeric(combinedTable$missMatchseq1[i])&binLogR[,2]>as.numeric(combinedTable$missMatchseq1[i])),4]
-            combinedTable[i,]$binlogRtype2 <- binLogR[which(binLogR[,1]<=as.numeric(combinedTable$missMatchseq1[i])&binLogR[,2]>as.numeric(combinedTable$missMatchseq1[i])),5]
-            combinedTable[i,]$binNum       <- binLogR[which(binLogR[,1]<=as.numeric(combinedTable$missMatchseq1[i])&binLogR[,2]>as.numeric(combinedTable$missMatchseq1[i])),1]
-          }
-        }
-
-        if(nrow(combinedTable) == 0){
-          combinedTable$binlogRCombined <- numeric(0)
-          combinedTable$binlogRtype1    <- numeric(0)
-          combinedTable$binlogRtype2    <- numeric(0)
-          combinedTable$binNum          <- numeric(0)
-        }
-        
-        rawVals <- funCalcN_withBAF(combinedTable$logRcombined,combinedTable$BAFcombined,tumorPloidy,tumorPurity,gamma)
-        combinedTable$nAcombined <- rawVals[,1]
-        combinedTable$nBcombined <- rawVals[,2]
-
-        nB_rawVal_withBAF        <- median(combinedTable$nBcombined, na.rm = TRUE)
-        nB_rawVal_withBAF_conf   <- t.test.NA(combinedTable$nBcombined)
-        nB_rawVal_withBAF_lower  <- nB_rawVal_withBAF_conf$conf.int[1]
-        nB_rawVal_withBAF_upper  <- nB_rawVal_withBAF_conf$conf.int[2]
-        
-        nA_rawVal_withBAF        <- median(combinedTable$nAcombined, na.rm = TRUE)
-        nA_rawVal_withBAF_conf   <- t.test.NA(combinedTable$nAcombined)
-        nA_rawVal_withBAF_lower  <- nA_rawVal_withBAF_conf$conf.int[1]
-        nA_rawVal_withBAF_upper  <- nA_rawVal_withBAF_conf$conf.int[2]
-        
-        rawValsBin      <- funCalcN_withBAF(combinedTable$binlogRCombined,combinedTable$BAFcombined,tumorPloidy,tumorPurity,gamma)
-        combinedTable$nAcombinedBin <- rawValsBin[,1]
-        combinedTable$nBcombinedBin <- rawValsBin[,2]
-        
-        nB_rawVal_withBAF           <- median(combinedTable$nBcombined, na.rm = TRUE)
-        nB_rawVal_withBAF_conf      <- t.test.NA(combinedTable$nBcombined)
-        nB_rawVal_withBAF_lower     <- nB_rawVal_withBAF_conf$conf.int[1]
-        nB_rawVal_withBAF_upper     <- nB_rawVal_withBAF_conf$conf.int[2]
-        
-        nA_rawVal_withBAF           <- median(combinedTable$nAcombined, na.rm = TRUE)
-        nA_rawVal_withBAF_conf      <- t.test.NA(combinedTable$nAcombined)
-        nA_rawVal_withBAF_lower     <- nA_rawVal_withBAF_conf$conf.int[1]
-        nA_rawVal_withBAF_upper     <- nA_rawVal_withBAF_conf$conf.int[2]
-        
-        #let's only count non duplicates
-        nB_rawVal_withBAF_bin       <- median(combinedTable[!duplicated(combinedTable$binNum),]$nBcombinedBin, na.rm = TRUE)
-        nB_rawVal_withBAF_bin_conf  <- t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nBcombinedBin)
-        nB_rawVal_withBAF_bin_lower <-nB_rawVal_withBAF_bin_conf$conf.int[1]
-        nB_rawVal_withBAF_bin_upper <-nB_rawVal_withBAF_bin_conf$conf.int[2]
-        
-        nA_rawVal_withBAF_bin       <- median(combinedTable[!duplicated(combinedTable$binNum),]$nAcombinedBin, na.rm = TRUE)
-        nA_rawVal_withBAF_bin_conf  <- t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nAcombinedBin)
-        nA_rawVal_withBAF_bin_lower <- nA_rawVal_withBAF_bin_conf$conf.int[1]
-        nA_rawVal_withBAF_bin_upper <- nA_rawVal_withBAF_bin_conf$conf.int[2]
-
-        combinedTable$nAsep    <- funCalcN_withoutBAF(combinedTable$logR_type1,tumorPloidy,tumorPurity,gamma)
-        combinedTable$nAsepBin <- funCalcN_withoutBAF(combinedTable$binlogRtype1,tumorPloidy,tumorPurity,gamma)
-        combinedTable$nBsep    <- funCalcN_withoutBAF(combinedTable$logR_type2,tumorPloidy,tumorPurity,gamma)
-        combinedTable$nBsepBin <- funCalcN_withoutBAF(combinedTable$binlogRtype2,tumorPloidy,tumorPurity,gamma)
-
-
-        nB_rawVal_withoutBAF <- median(combinedTable$nBsep, na.rm = TRUE)
-        nB_rawVal_withoutBAF_conf <- t.test.NA(combinedTable$nBsep)
-        nB_rawVal_withoutBAF_lower <- nB_rawVal_withoutBAF_conf$conf.int[1]
-        nB_rawVal_withoutBAF_upper <- nB_rawVal_withoutBAF_conf$conf.int[2]
-    
-        nA_rawVal_withoutBAF <- median(combinedTable$nAsep, na.rm = TRUE)
-
-        nA_rawVal_withoutBAF_conf <- t.test.NA(combinedTable$nAsep)
-        nA_rawVal_withoutBAF_lower <- nA_rawVal_withoutBAF_conf$conf.int[1]
-        nA_rawVal_withoutBAF_upper <- nA_rawVal_withoutBAF_conf$conf.int[2]
-        
-        nB_rawVal_withoutBAFBin <-  median(combinedTable[!duplicated(combinedTable$binNum),]$nBsepBin, na.rm = TRUE)
-        nB_rawVal_withoutBAFBin_conf <-  t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nBsepBin)
-        nB_rawVal_withoutBAFBin_lower <- nB_rawVal_withoutBAFBin_conf$conf.int[1]
-        nB_rawVal_withoutBAFBin_upper <- nB_rawVal_withoutBAFBin_conf$conf.int[2]
-        
-        
-        nA_rawVal_withoutBAFBin <-  median(combinedTable[!duplicated(combinedTable$binNum),]$nAsepBin, na.rm = TRUE)
-        nA_rawVal_withoutBAFBin_conf <-  t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nAsepBin)
-        nA_rawVal_withoutBAFBin_lower <- nA_rawVal_withoutBAFBin_conf$conf.int[1]
-        nA_rawVal_withoutBAFBin_upper <- nA_rawVal_withoutBAFBin_conf$conf.int[2]
-
-        # we can also predict the BAF from our logR
-        combinedTable$expectedBAF <- (1-tumorPurity+tumorPurity*combinedTable$nAsep)/(2-2*tumorPurity+tumorPurity*(combinedTable$nAsep+combinedTable$nBsep))
-      
+        PotentialSites   <- as.character(seqToConsider[i]:seqToConsider[i+1])
+        combinedBinTumor  <- median(as.numeric(as.numeric(HLA_A_type1tumorCov[names(HLA_A_type1tumorCov)%in%PotentialSites])), na.rm = TRUE)+median(as.numeric(as.numeric(HLA_A_type2tumorCov[names(HLA_A_type2tumorCov)%in%PotentialSites])), na.rm = TRUE)
+        combinedBinNormal <- median(as.numeric(as.numeric(HLA_A_type1normalCov[names(HLA_A_type1normalCov)%in%PotentialSites])), na.rm= TRUE)+median(as.numeric(as.numeric(HLA_A_type2normalCov[names(HLA_A_type2normalCov)%in%PotentialSites])), na.rm = TRUE)
+        combinedBinlogR   <- log2(combinedBinTumor/combinedBinNormal*MultFactor)
+        type1BinlogR     <- median(log2(as.numeric(as.numeric(HLA_A_type1tumorCov[names(HLA_A_type1tumorCov)%in%PotentialSites])/as.numeric(HLA_A_type1normalCov[names(HLA_A_type1normalCov)%in%PotentialSites])*MultFactor)), na.rm = TRUE)
+        type2BinlogR     <- median(log2(as.numeric(as.numeric(HLA_A_type2tumorCov[names(HLA_A_type2tumorCov)%in%PotentialSites])/as.numeric(HLA_A_type2normalCov[names(HLA_A_type2normalCov)%in%PotentialSites])*MultFactor)), na.rm = TRUE)
+        binLogR <- rbind(binLogR,cbind(seqToConsider[i],seqToConsider[i+1],combinedBinlogR,type1BinlogR,type2BinlogR))
       }
 
+
+      tmpOut_cn <- cbind(missMatchseq1
+                      ,log2(c(HLA_A_type1tumorCov/HLA_A_type1normalCov)*MultFactor)[as.character(missMatchseq1)]
+                      ,HLA_A_type1tumorCov[as.character(missMatchseq1)]
+                      ,missMatchseq2
+                     ,log2(c(HLA_A_type2tumorCov/HLA_A_type2normalCov)*MultFactor)[as.character(missMatchseq2)]
+                     ,HLA_A_type2tumorCov[as.character(missMatchseq2)]
+                     ,HLA_A_type1normalCov[as.character(missMatchseq1)]
+                     ,HLA_A_type2normalCov[as.character(missMatchseq2)]
+                     )
+      colnames(tmpOut_cn) <- c('missMatchseq1','logR_type1','TumorCov_type1','missMatchseq2','logR_type2','TumorCov_type2','NormalCov_type1','NormalCov_type2')
+    
+      
+      dup1   <- unique(tmpOut_cn[duplicated(tmpOut_cn[,1]),1])
+      dup2   <- unique(tmpOut_cn[duplicated(tmpOut_cn[,4]),4])
+      
+      for(duplicationIn1 in dup1)
+      {
+        tmpOut_cn[tmpOut_cn[,1]==duplicationIn1,'TumorCov_type2']  <- mean(tmpOut_cn[tmpOut_cn[,1]==duplicationIn1,'TumorCov_type2'])
+        tmpOut_cn[tmpOut_cn[,1]==duplicationIn1,'NormalCov_type2'] <- mean(tmpOut_cn[tmpOut_cn[,1]==duplicationIn1,'NormalCov_type2'])  
+        tmpOut_cn[tmpOut_cn[,1]==duplicationIn1,'logR_type2']      <- mean(tmpOut_cn[tmpOut_cn[,1]==duplicationIn1,'logR_type2'])  
+      }
+      
+      for(duplicationIn2 in dup2)
+      {
+        tmpOut_cn[tmpOut_cn[,4]==duplicationIn2,'TumorCov_type1']  <- mean(tmpOut_cn[tmpOut_cn[,4]==duplicationIn2,'TumorCov_type1'])
+        tmpOut_cn[tmpOut_cn[,4]==duplicationIn2,'NormalCov_type1'] <- mean(tmpOut_cn[tmpOut_cn[,4]==duplicationIn2,'NormalCov_type1'])  
+        tmpOut_cn[tmpOut_cn[,4]==duplicationIn2,'logR_type1']      <- mean(tmpOut_cn[tmpOut_cn[,4]==duplicationIn2,'logR_type1'])   
+      }
+      
+      tmpOut_cn  <- tmpOut_cn[!duplicated(tmpOut_cn[,1]),,drop=FALSE]
+      tmpOut_cn  <- tmpOut_cn[!duplicated(tmpOut_cn[,4]),,drop=FALSE]
+      colnames(tmpOut_cn) <- c('missMatchseq1','logR_type1','TumorCov_type1','missMatchseq2','logR_type2','TumorCov_type2','NormalCov_type1','NormalCov_type2')
+
+
+      combinedTable <- data.frame(tmpOut_cn,stringsAsFactors=FALSE)
+      combinedTable$logRcombined <- log2(((combinedTable$TumorCov_type1+combinedTable$TumorCov_type2)/(combinedTable$NormalCov_type1+combinedTable$NormalCov_type2))*MultFactor)
+      combinedTable$BAFcombined  <- combinedTable$TumorCov_type1/(combinedTable$TumorCov_type1+combinedTable$TumorCov_type2)
+
+      if(nrow(combinedTable) != 0){
+        combinedTable$binlogRCombined <- NA
+        combinedTable$binlogRtype1    <- NA
+        combinedTable$binlogRtype2    <- NA
+        combinedTable$binNum          <- NA
+
+        # next, add the binLogR to this table
+        for (i in 1:nrow(combinedTable))
+        {
+          combinedTable[i,]$binlogRCombined <- binLogR[which(binLogR[,1]<=as.numeric(combinedTable$missMatchseq1[i])&binLogR[,2]>as.numeric(combinedTable$missMatchseq1[i])),3]
+          combinedTable[i,]$binlogRtype1   <- binLogR[which(binLogR[,1]<=as.numeric(combinedTable$missMatchseq1[i])&binLogR[,2]>as.numeric(combinedTable$missMatchseq1[i])),4]
+          combinedTable[i,]$binlogRtype2 <- binLogR[which(binLogR[,1]<=as.numeric(combinedTable$missMatchseq1[i])&binLogR[,2]>as.numeric(combinedTable$missMatchseq1[i])),5]
+          combinedTable[i,]$binNum       <- binLogR[which(binLogR[,1]<=as.numeric(combinedTable$missMatchseq1[i])&binLogR[,2]>as.numeric(combinedTable$missMatchseq1[i])),1]
+        }
+      }
+
+      if(nrow(combinedTable) == 0){
+        combinedTable$binlogRCombined <- numeric(0)
+        combinedTable$binlogRtype1    <- numeric(0)
+        combinedTable$binlogRtype2    <- numeric(0)
+        combinedTable$binNum          <- numeric(0)
+      }
+      
+      rawVals <- funCalcN_withBAF(combinedTable$logRcombined,combinedTable$BAFcombined,tumorPloidy,tumorPurity,gamma)
+      combinedTable$nAcombined <- rawVals[,1]
+      combinedTable$nBcombined <- rawVals[,2]
+
+      nB_rawVal_withBAF        <- median(combinedTable$nBcombined, na.rm = TRUE)
+      nB_rawVal_withBAF_conf   <- t.test.NA(combinedTable$nBcombined)
+      nB_rawVal_withBAF_lower  <- nB_rawVal_withBAF_conf$conf.int[1]
+      nB_rawVal_withBAF_upper  <- nB_rawVal_withBAF_conf$conf.int[2]
+      
+      nA_rawVal_withBAF        <- median(combinedTable$nAcombined, na.rm = TRUE)
+      nA_rawVal_withBAF_conf   <- t.test.NA(combinedTable$nAcombined)
+      nA_rawVal_withBAF_lower  <- nA_rawVal_withBAF_conf$conf.int[1]
+      nA_rawVal_withBAF_upper  <- nA_rawVal_withBAF_conf$conf.int[2]
+      
+      rawValsBin      <- funCalcN_withBAF(combinedTable$binlogRCombined,combinedTable$BAFcombined,tumorPloidy,tumorPurity,gamma)
+      combinedTable$nAcombinedBin <- rawValsBin[,1]
+      combinedTable$nBcombinedBin <- rawValsBin[,2]
+      
+      nB_rawVal_withBAF           <- median(combinedTable$nBcombined, na.rm = TRUE)
+      nB_rawVal_withBAF_conf      <- t.test.NA(combinedTable$nBcombined)
+      nB_rawVal_withBAF_lower     <- nB_rawVal_withBAF_conf$conf.int[1]
+      nB_rawVal_withBAF_upper     <- nB_rawVal_withBAF_conf$conf.int[2]
+      
+      nA_rawVal_withBAF           <- median(combinedTable$nAcombined, na.rm = TRUE)
+      nA_rawVal_withBAF_conf      <- t.test.NA(combinedTable$nAcombined)
+      nA_rawVal_withBAF_lower     <- nA_rawVal_withBAF_conf$conf.int[1]
+      nA_rawVal_withBAF_upper     <- nA_rawVal_withBAF_conf$conf.int[2]
+      
+      #let's only count non duplicates
+      nB_rawVal_withBAF_bin       <- median(combinedTable[!duplicated(combinedTable$binNum),]$nBcombinedBin, na.rm = TRUE)
+      nB_rawVal_withBAF_bin_conf  <- t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nBcombinedBin)
+      nB_rawVal_withBAF_bin_lower <-nB_rawVal_withBAF_bin_conf$conf.int[1]
+      nB_rawVal_withBAF_bin_upper <-nB_rawVal_withBAF_bin_conf$conf.int[2]
+      
+      nA_rawVal_withBAF_bin       <- median(combinedTable[!duplicated(combinedTable$binNum),]$nAcombinedBin, na.rm = TRUE)
+      nA_rawVal_withBAF_bin_conf  <- t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nAcombinedBin)
+      nA_rawVal_withBAF_bin_lower <- nA_rawVal_withBAF_bin_conf$conf.int[1]
+      nA_rawVal_withBAF_bin_upper <- nA_rawVal_withBAF_bin_conf$conf.int[2]
+
+      combinedTable$nAsep    <- funCalcN_withoutBAF(combinedTable$logR_type1,tumorPloidy,tumorPurity,gamma)
+      combinedTable$nAsepBin <- funCalcN_withoutBAF(combinedTable$binlogRtype1,tumorPloidy,tumorPurity,gamma)
+      combinedTable$nBsep    <- funCalcN_withoutBAF(combinedTable$logR_type2,tumorPloidy,tumorPurity,gamma)
+      combinedTable$nBsepBin <- funCalcN_withoutBAF(combinedTable$binlogRtype2,tumorPloidy,tumorPurity,gamma)
+
+
+      nB_rawVal_withoutBAF <- median(combinedTable$nBsep, na.rm = TRUE)
+      nB_rawVal_withoutBAF_conf <- t.test.NA(combinedTable$nBsep)
+      nB_rawVal_withoutBAF_lower <- nB_rawVal_withoutBAF_conf$conf.int[1]
+      nB_rawVal_withoutBAF_upper <- nB_rawVal_withoutBAF_conf$conf.int[2]
+  
+      nA_rawVal_withoutBAF <- median(combinedTable$nAsep, na.rm = TRUE)
+
+      nA_rawVal_withoutBAF_conf <- t.test.NA(combinedTable$nAsep)
+      nA_rawVal_withoutBAF_lower <- nA_rawVal_withoutBAF_conf$conf.int[1]
+      nA_rawVal_withoutBAF_upper <- nA_rawVal_withoutBAF_conf$conf.int[2]
+      
+      nB_rawVal_withoutBAFBin <-  median(combinedTable[!duplicated(combinedTable$binNum),]$nBsepBin, na.rm = TRUE)
+      nB_rawVal_withoutBAFBin_conf <-  t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nBsepBin)
+      nB_rawVal_withoutBAFBin_lower <- nB_rawVal_withoutBAFBin_conf$conf.int[1]
+      nB_rawVal_withoutBAFBin_upper <- nB_rawVal_withoutBAFBin_conf$conf.int[2]
+      
+      
+      nA_rawVal_withoutBAFBin <-  median(combinedTable[!duplicated(combinedTable$binNum),]$nAsepBin, na.rm = TRUE)
+      nA_rawVal_withoutBAFBin_conf <-  t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nAsepBin)
+      nA_rawVal_withoutBAFBin_lower <- nA_rawVal_withoutBAFBin_conf$conf.int[1]
+      nA_rawVal_withoutBAFBin_upper <- nA_rawVal_withoutBAFBin_conf$conf.int[2]
+
+      # we can also predict the BAF from our logR
+      combinedTable$expectedBAF <- (1-tumorPurity+tumorPurity*combinedTable$nAsep)/(2-2*tumorPurity+tumorPurity*(combinedTable$nAsep+combinedTable$nBsep))
+    
 
 
       # t tests of coverage
@@ -1485,7 +1524,8 @@ for (region in regions)
         load(paste(figureDir, region, '.', HLA_gene, '.tmp.data.plots.RData', sep = ''))
       } else{
         write.table(paste('\nRun with coverageStep==TRUE for : ', region, ' first! ', '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
-        stop('Run with coverageStep completed first!')
+        howToWarn(paste('Run with coverageStep completed first -- skipping ', region, '-', HLA_gene, '!', sep = ''))
+        next
       }
       if(!exists('regionSpecOutPut')){
         write.table(paste('\ncoverageStep did not run to completion for: ', HLA_gene, ' in ', region, '! ', '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
@@ -2054,4 +2094,4 @@ if(cleanUp)
 
 
 
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
