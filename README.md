@@ -103,7 +103,7 @@ OPTIONS:
 		path to GATK executable [default= ]
 
 	-ex CHARACTER, --HLAexonLoc=CHARACTER
-		HLA exon boundaries for plotting [default=~/lohhla/datahla.dat]
+		HLA exon boundaries for plotting [default=~/lohhla/data/hla.dat]
 
 	-w CHARACTER, --ignoreWarnings=CHARACTER
 		continue running with warnings [default= TRUE]
@@ -111,6 +111,63 @@ OPTIONS:
 	-h, --help
 		Show this help message and exit            
  
+
+### What is the output of LOHHLA? ###
+
+LOHHLA produces multiple different files (see correct-example-out for an example). To determine HLA LOH in a given sample, the most relevant output is the file which ends '.HLAlossPrediction CI.xls'. 
+The most relavant columns are:
+
+	HLA_A_type1  						 - the identity of allele 1
+	HLA_A_type2  						 - the identity of allele 2
+	Pval_unique  					     - this is a p-value relating to allelic imbalance 
+	LossAllele      					 - this corresponds to the HLA allele that is subject to loss
+	KeptAllele      					 - this corresponds to the HLA allele that is not subject to loss
+	HLA_type1copyNum_withBAFBin          - the estimated raw copy number of HLA (allele 1)
+	HLA_type2copyNum_withBAFBin          - the estimated raw copy number of HLA (allele 2)
+
+
+For a full definition of the columns, see below, in each case whether the column should be used [use], or can be ignored [legacy]is indicated:
+
+	region								 - the region or tumor sample [use]
+	HLA_A_type1							 - the identity of allele 1 [use]
+	HLA_A_type2							 - the identity of allele 2 [use]
+	HLAtype1Log2MedianCoverage	         - the median LogR coverage across allele 1 [use] 
+	HLAtype2Log2MedianCoverage	         - the median LogR coverage across allele 2 [use]
+	HLAtype1Log2MedianCoverageAtSites	 - the median LogR coverage across allele 1, restricted to mismatch sites [use]
+	HLAtype2Log2MedianCoverageAtSites	 - the median LogR coverage across allele 2, restricted to mismatch sites [use]
+	HLA_type1copyNum_withoutBAF	         - estimated copy number of allele 1, without using BAF [legacy] 
+	HLA_type1copyNum_withoutBAF_lower	 - lower 95% confidence interval of estimated copy number of allele 1, without using BAF [legacy] 
+	HLA_type1copyNum_withoutBAF_upper	 - upper 95% confidence interval of estimated copy number of allele 1, without using BAF [legacy] 
+	HLA_type1copyNum_withBAF	         - estimated copy number of allele 1 using BAF, without binning sites [legacy] 
+	HLA_type1copyNum_withBAF_lower	     - lower 95% confidence interval of estimated copy number of allele 1 using BAF, without binning sites [legacy] 
+	HLA_type1copyNum_withBAF_upper	     - upper 95% confidence interval of estimated copy number of allele 1 using BAF, without binning sites [legacy] 
+	HLA_type2copyNum_withoutBAF	         - estimated copy number of allele 2 without using BAF  [legacy] 
+	HLA_type2copyNum_withoutBAF_lower	 - lower 95% confidence interval of estimated copy number of allele 2, without using BAF [legacy] 
+	HLA_type2copyNum_withoutBAF_upper	 - upper 95% confidence interval of estimated copy number of allele 2, without using BAF [legacy] 
+	HLA_type2copyNum_withBAF	         - estimated copy number of allele 2 using BAF, without binning sites [legacy] 
+	HLA_type2copyNum_withBAF_lower	     - lower 95% confidence interval of estimated copy number of allele 1 using BAF, without binning sites [legacy] 
+	HLA_type2copyNum_withBAF_upper	     - upper 95% confidence interval of estimated copy number of allele 1 using BAF, without binning sites [legacy] 
+	HLA_type1copyNum_withoutBAFBin	     - estimated copy number of allele 1 using binning, but without BAF [legacy]  
+	HLA_type1copyNum_withoutBAFBin_lower - lower 95% confidence interval of estimated copy number of allele 1 using binning, but without BAF [legacy]  	
+	HLA_type1copyNum_withoutBAFBin_upper - upper 95% confidence interval of estimated copy number of allele 1 using binning, but without BAF [legacy] 	
+	HLA_type1copyNum_withBAFBin	         - estimated copy number of allele 1 using binning and BAF [use] 
+	HLA_type1copyNum_withBAFBin_lower	 - lower 95% confidence interval of estimated copy number of allele 1 using binning and BAF [use] 
+	HLA_type1copyNum_withBAFBin_upper	 - upper 95% confidence interval of estimated copy number of allele 1 using binning and BAF [use]  
+	HLA_type2copyNum_withoutBAFBin	     - estimated copy number of allele 2 using binning, but without BAF [legacy]  
+	HLA_type2copyNum_withoutBAFBin_lower - lower 95% confidence interval of estimated copy number of allele 2 using binning, but without BAF [legacy]	
+	HLA_type2copyNum_withoutBAFBin_upper - upper 95% confidence interval of estimated copy number of allele 2 using BAF, without binning sites [legacy] 	
+	HLA_type2copyNum_withBAFBin	         - estimated copy number of allele 2 using binning and BAF [use] 
+	HLA_type2copyNum_withBAFBin_lower	 - lower 95% confidence interval of estimated copy number of allele 2 using binning and BAF [use] 
+	HLA_type2copyNum_withBAFBin_upper	 - upper 95% confidence interval of estimated copy number of allele 2 using binning and BAF [use
+	PVal                                 - p-value relating to difference in logR between allele 1 and allele 2 (paired t-test)[legacy]
+	UnPairedPval	                     - p-value relating to difference in logR between allele 1 and allele 2 (unpaired t-test)[legacy]
+	PVal_unique	                         - p-value relating to difference in logR between allele 1 and allele 2, ensuring each read only contributes once (paired t-test) [use]
+	UnPairedPval_unique                  - p-value relating to difference in logR between allele 1 and allele 2, ensuring each read only contributes once (unpaired t-test) [use]
+	LossAllele	                         - HLA allele that is present at lower frequency (potentially subject to loss) [use]
+	KeptAllele                           - HLA allele that is present at higher frequency (potentially not subject to loss) [use]
+	numMisMatchSitesCov                  - number of mismatch sites with sufficient coverage [use]
+	propSupportiveSites                  - proportion of missmatch sites that are consistent with loss or allelic imbalance [use]
+
 
 ### How can I test if LOHHLA is working? ###
 
