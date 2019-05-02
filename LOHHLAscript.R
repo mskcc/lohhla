@@ -589,15 +589,15 @@ if(mapping.step){
     write.table(samtoolsCMD, file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
     system(samtoolsCMD)
     
-    samtoolsCMD <- paste("samtools view ", BAMDir, '/', BAMfile, " chr6:29909037-29913661 >> ",regionDir,"/",BAMid,".chr6region.sam",sep="")
+    samtoolsCMD <- paste("samtools view ", BAMDir, '/', BAMfile, " 6:29909037-29913661 >> ",regionDir,"/",BAMid,".chr6region.sam",sep="")
     write.table(samtoolsCMD, file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
     system(samtoolsCMD)
     
-    samtoolsCMD <- paste("samtools view ", BAMDir, '/', BAMfile, " chr6:31321649-31324964 >> ",regionDir,"/",BAMid,".chr6region.sam",sep="")
+    samtoolsCMD <- paste("samtools view ", BAMDir, '/', BAMfile, " 6:31321649-31324964 >> ",regionDir,"/",BAMid,".chr6region.sam",sep="")
     write.table(samtoolsCMD, file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
     system(samtoolsCMD)
     
-    samtoolsCMD <- paste("samtools view ", BAMDir, '/', BAMfile, " chr6:31236526-31239869 >> ",regionDir,"/",BAMid,".chr6region.sam",sep="")
+    samtoolsCMD <- paste("samtools view ", BAMDir, '/', BAMfile, " 6:31236526-31239869 >> ",regionDir,"/",BAMid,".chr6region.sam",sep="")
     write.table(samtoolsCMD, file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
     system(samtoolsCMD)
 
