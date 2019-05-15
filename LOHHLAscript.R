@@ -117,37 +117,37 @@ require(Rsamtools, quietly = TRUE)
 # inputs #
 ###########
 
-interactive           <- FALSE
-if(interactive)
-{
-  # if you wish to run script interactively, then alter parameters below
-  opt<-parse_args(opt_parser,c('--patientId', 'G_K107'
-                               , '--outputDir', '/camp/lab/swantonc/working/mcgrann/projects/LOHproject/kidney_run/G_K107_full/'
-                               , '--normalBAMfile', '/camp/project/tracerX/working/CRENAL/OUTPUT/G_K107/Rabbit_Hole_Exome/MERGED/DE_DUPED/N1d1ex1.bam'
-                               , '--BAMDir', '/camp/project/tracerX/working/CRENAL/OUTPUT/G_K107/Rabbit_Hole_Exome/MERGED/DE_DUPED/'
-                               , '--hlaPath', '/camp/project/tracerX/working/CRENAL/OUTPUT/G_K107/Rabbit_Hole_Exome/MERGED/POLYSOLVER/HLA_Type/winners.hla.txt'
-                               , '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta'
-                               , '--CopyNumLoc', '/camp/lab/swantonc/working/mcgrann/projects/LOHproject/kidney_run/G_K107/copyNumSolutions.txt'
-                               , '--mappingStep', 'TRUE'
-                               , '--cleanUp', 'TRUE'
-                               , '--overrideDir', '/camp/lab/swantonc/working/mcgrann/projects/LOHproject/kidney_run/G_K107/flagstat/'
-                               , '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/'
-                               , '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
-
-  opt<-parse_args(opt_parser,c('--patientId', 'G_K107'
-                               , '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/'
-                               , '--normalBAMfile', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/BAMs/B1d1xx1.bam'
-                               , '--BAMDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/BAMs/'
-                               , '--hlaPath', '/camp/project/tracerX/working/CRENAL/OUTPUT/G_K107/Rabbit_Hole_Exome/MERGED/POLYSOLVER/HLA_Type/winners.hla.txt'
-                               , '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta'
-                               , '--CopyNumLoc', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/copyNumSolutions.txt'
-                               , '--mappingStep', 'TRUE'
-                               , '--cleanUp', 'TRUE'
-                               , '--overrideDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/flagstat/'
-                               , '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/'
-                               , '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
-  
-}
+## interactive           <- FALSE
+## if(interactive)
+## {
+##   # if you wish to run script interactively, then alter parameters below
+##   opt<-parse_args(opt_parser,c('--patientId', 'G_K107'
+##                                , '--outputDir', '/camp/lab/swantonc/working/mcgrann/projects/LOHproject/kidney_run/G_K107_full/'
+##                                , '--normalBAMfile', '/camp/project/tracerX/working/CRENAL/OUTPUT/G_K107/Rabbit_Hole_Exome/MERGED/DE_DUPED/N1d1ex1.bam'
+##                                , '--BAMDir', '/camp/project/tracerX/working/CRENAL/OUTPUT/G_K107/Rabbit_Hole_Exome/MERGED/DE_DUPED/'
+##                                , '--hlaPath', '/camp/project/tracerX/working/CRENAL/OUTPUT/G_K107/Rabbit_Hole_Exome/MERGED/POLYSOLVER/HLA_Type/winners.hla.txt'
+##                                , '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta'
+##                                , '--CopyNumLoc', '/camp/lab/swantonc/working/mcgrann/projects/LOHproject/kidney_run/G_K107/copyNumSolutions.txt'
+##                                , '--mappingStep', 'TRUE'
+##                                , '--cleanUp', 'TRUE'
+##                                , '--overrideDir', '/camp/lab/swantonc/working/mcgrann/projects/LOHproject/kidney_run/G_K107/flagstat/'
+##                                , '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/'
+##                                , '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
+## 
+##   opt<-parse_args(opt_parser,c('--patientId', 'G_K107'
+##                                , '--outputDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/'
+##                                , '--normalBAMfile', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/BAMs/B1d1xx1.bam'
+##                                , '--BAMDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/BAMs/'
+##                                , '--hlaPath', '/camp/project/tracerX/working/CRENAL/OUTPUT/G_K107/Rabbit_Hole_Exome/MERGED/POLYSOLVER/HLA_Type/winners.hla.txt'
+##                                , '--HLAfastaLoc', '/farm/home/lr-tct-lif/wilson52/installs/polysolver/data/abc_complete.fasta'
+##                                , '--CopyNumLoc', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/copyNumSolutions.txt'
+##                                , '--mappingStep', 'TRUE'
+##                                , '--cleanUp', 'TRUE'
+##                                , '--overrideDir', '/camp/lab/swantonc/working/rosentr/projects/PolySolverLOH/test/test-renal/G_K107-v2/flagstat/'
+##                                , '--gatkDir', '/camp/apps/eb/software/TracerX-Picard-GATK/0.1-Java-1.7.0_80/bin/'
+##                                , '--novoDir', '/camp/apps/eb/software/novoalign/3.07.00/bin/'))
+##   
+## }
 
 print(full.patient)
 system('echo ${SLURM_JOBID}')
