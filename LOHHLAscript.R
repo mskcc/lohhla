@@ -13,8 +13,8 @@ library(optparse)
 option_list = list(
   make_option(c("-id", "--patientId"), type="character", default=NULL,   ## this argument is meant to be required
               help="patient ID", metavar="character"),
-  make_option(c("-o", "--outputDir"), type="character", default=NULL, 
-              help="location of output directory", metavar="character"),
+  ## make_option(c("-o", "--outputDir"), type="character", default=NULL, 
+  ##            help="location of output directory", metavar="character"),
   make_option(c("-nBAM", "--normalBAMfile"), type="character", default=NULL,    
               help="normal BAM file\n\t\tcan be FALSE to run without normal sample", metavar="character"),
   make_option(c("-tBAM", "--tumorBAMfile"), type="character", default=NULL,    
@@ -71,7 +71,7 @@ print(opt)
 ##########################
 
 full.patient      <- opt$patientId
-workDir           <- opt$outputDir     ### NOTE: outputDir is the workDir
+workDir           <- getwd()   ### NOTE: outputDir is the workDir
 normalBAMfile     <- opt$normalBAMfile
 tumorBAMfile      <- opt$tumorBAMfile
 hlaPath           <- opt$hlaPath
@@ -93,13 +93,54 @@ ignoreWarnings    <- opt$ignoreWarnings
 
 
 
-if (is.null(opt$tumorBAMfile) | is.null(opt$outputDir) | is.null(opt$hlaPath) | is.null(opt$HLAfastaLoc)){
+if (is.null(opt$tumorBAMfile) | is.null(opt$hlaPath) | is.null(opt$HLAfastaLoc)){
   print_help(opt_parser)
   stop("Missing arguments.\n", call.=FALSE)  
 }
 
 
 
+
+print('full.patient') 
+print(full.patient)     
+print('workDir')
+print(workDir)              
+print('normalBAMfile')   
+print(normalBAMfile) 
+print('tumorBAMfile')   
+print(tumorBAMfile)  
+print('hlaPath')         
+print(hlaPath)      
+print('HLAfastaLoc')
+print(HLAfastaLoc)       
+print('CopyNumLoc')   
+print(CopyNumLoc)      
+print('overrideDir')
+print(overrideDir)         
+print('minCoverageFilter')
+print(minCoverageFilter)   
+print('numMisMatch')    
+print(numMisMatch)      
+print('mapping.step')      
+print(mapping.step)   
+print('cleanUp')
+print(cleanUp)              
+print('NOVODir')   
+print(NOVODir)        
+print('GATKDir')
+print(GATKDir)
+print('HLAexonLoc')   
+print(HLAexonLoc)      
+print('kmerSize') 
+print(kmerSize)       
+print('fishing.step')  
+print(fishing.step)    
+print('coverageStep')
+print(coverageStep)      
+print('plottingStep')  
+print(plottingStep)     
+print('ignoreWarnings')     
+print(ignoreWarnings) 
 
 #############
 # libraries #
@@ -874,7 +915,20 @@ if(runWithNormal){
 
   # this will need to change if normal BAM doesn't have GL in name
   #GermLineUniqMappedReads <- regionUniqMappedRegions[[grep("GL",names(regionUniqMappedRegions),value=TRUE)]]
-  GermLineUniqMappedReads <- regionUniqMappedRegions[[grep(normalName, names(regionUniqMappedRegions),value=TRUE)]]
+
+  print("print unique region regionUniqMappedRegions")
+
+  print("         ")
+  print("normalName")
+  print("      ")
+  print(normalName)
+
+  print("regionUniqMappedRegions")
+  print("       ")
+  print(regionUniqMappedRegions)
+  print('done')
+
+  GermLineUniqMappedReads <- regionUniqMappedRegions[[grep(normalName, names(regionUniqMappedRegions), value=TRUE)]]
 
 }
 
