@@ -13,6 +13,9 @@ library(optparse)
 option_list = list(
   make_option(c("-id", "--patientId"), type="character", default=NULL,   ## this argument is meant to be required
               help="patient ID", metavar="character"),
+  ## 
+  ## the Nextflow pipeline should simply use getwd(), not a unique working output directory
+  ##
   ## make_option(c("-o", "--outputDir"), type="character", default=NULL, 
   ##            help="location of output directory", metavar="character"),
   make_option(c("-nBAM", "--normalBAMfile"), type="character", default=NULL,    
@@ -94,7 +97,7 @@ ignoreWarnings    <- opt$ignoreWarnings
 
 
 
-
+## removed the necessity of a required workDir parameter set by user; use `getwd()` for Nextflow pipeline
 
 if (is.null(opt$tumorBAMfile) | is.null(opt$hlaPath) | is.null(opt$HLAfastaLoc)){
   print_help(opt_parser)
