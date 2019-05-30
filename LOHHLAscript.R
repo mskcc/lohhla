@@ -93,6 +93,9 @@ ignoreWarnings    <- opt$ignoreWarnings
 
 
 
+
+
+
 if (is.null(opt$tumorBAMfile) | is.null(opt$hlaPath) | is.null(opt$HLAfastaLoc)){
   print_help(opt_parser)
   stop("Missing arguments.\n", call.=FALSE)  
@@ -861,7 +864,7 @@ for (region in regions)
 if(runWithNormal){
 
   ## normalName <- regions[which(paste(BAMDir, '/', regions, '.bam', sep = '') == normalBAMfile)]
-  normalName = gsub(".bam", "", normalBAMfile)
+  normalName = gsub("\\..*","", normalBAMfile)
   
 
   if(!override){
@@ -897,7 +900,7 @@ if(runWithNormal){
 ####################################
 
 ## normalName <- regions[which(paste(BAMDir, '/', regions, '.bam', sep = '') == normalBAMfile)]
-normalName = gsub(".bam", "", normalBAMfile)
+normalName = gsub("\\..*","", normalBAMfile)
 
 # let's load the winners
 # next, we can look at each mpileupFile, and assess whether we see differences in coverage between the two. 
