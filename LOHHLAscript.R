@@ -1642,8 +1642,8 @@ for (region in regions)
 
 
   #plotting
-  if(plottingStep)
-  {
+  if(plottingStep){
+    tryCatch({
     write.table(paste('\nplotting for region: ', region, ' at ', date(), '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
     pdf(paste(figureDir, '/', region,".minCoverage_",minCoverageFilter,".HLA.pdf",sep=""),width=10,height=6)
     for (HLA_gene in unique(substr(hlaAlleles, 1,5)))
@@ -2165,6 +2165,7 @@ for (region in regions)
       }
     }     
     dev.off()
+  },error=function(cond) {message("Error in plotting, please check"); return(NULL)},finally={message("plotting completed")})
   }
 }  
 
