@@ -280,9 +280,6 @@ get.partially.matching.reads <- function(workDir, regionDir, BAMfile){
 }
 
 
-
-
-
 combine.fastqs <- function(chr6.f1, chr6.f2, fished.f1, fished.f2){
 
   chr6.f1.seq <- read.table(chr6.f1, sep = '\t', stringsAsFactors = FALSE, comment.char = '', quote = '')
@@ -492,7 +489,8 @@ getUniqMapReads <- function(workDir
     }
 
     for(BAM in BAMs){
-      region <- unlist(strsplit(BAM, split = '/'))[length(unlist(strsplit(BAM, split = '/')))]
+      ## region <- unlist(strsplit(BAM, split = '/'))[length(unlist(strsplit(BAM, split = '/')))]
+      region = gsub(".bam", "", BAM)
       cmd    <- paste('samtools flagstat ', BAM, ' > ', outDir, region, '.proc.flagstat', sep = '')
       system(cmd)
     }  
@@ -912,6 +910,7 @@ PatientOutPut <- c()
 
 for (region in regions)
 {
+  tryCatch({
   if(paste(region, '.bam', sep = '') == normalBAMfile){
     next
   }
@@ -1636,6 +1635,7 @@ for (region in regions)
       save.image(paste(figureDir, '/', region, '.', HLA_gene, '.tmp.data.plots.RData', sep = ''))
 
     }
+  },error=function(cond) {message(paste0("Error in region, ", region, " please check"); return(NULL)},finally={message(paste0("analysis completed for region ", region))})
   }
 
 
