@@ -910,7 +910,7 @@ PatientOutPut <- c()
 
 for (region in regions)
 {
-  tryCatch({
+tryCatch({
   if(paste(region, '.bam', sep = '') == normalBAMfile){
     next
   }
@@ -1634,8 +1634,7 @@ for (region in regions)
       # save some temporary files for plotting
       save.image(paste(figureDir, '/', region, '.', HLA_gene, '.tmp.data.plots.RData', sep = ''))
 
-    }
-  },error=function(cond) {message(paste0("Error in region, ", region, " please check"); return(NULL)},finally={message(paste0("analysis completed for region ", region))})
+    },error=function(cond){message(paste0("Error in region, ", region, " please check")); return(NULL)}, finally={message(paste0("analysis completed for region ", region))})
   }
 
 
@@ -1643,7 +1642,7 @@ for (region in regions)
 
   #plotting
   if(plottingStep){
-    tryCatch({
+  tryCatch({
     write.table(paste('\nplotting for region: ', region, ' at ', date(), '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
     pdf(paste(figureDir, '/', region,".minCoverage_",minCoverageFilter,".HLA.pdf",sep=""),width=10,height=6)
     for (HLA_gene in unique(substr(hlaAlleles, 1,5)))
@@ -2165,7 +2164,7 @@ for (region in regions)
       }
     }     
     dev.off()
-  },error=function(cond) {message("Error in plotting, please check"); return(NULL)},finally={message("plotting completed")})
+  },error=function(cond){message("Error in plotting, please check"); return(NULL)}, finally={message("plotting completed")})
   }
 }  
 
