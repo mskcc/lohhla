@@ -44,7 +44,7 @@ option_list = list(
               help="are plots made [default= %default]", metavar="character"),
   make_option(c("-cs", "--coverageStep"), type="logical", default=TRUE, 
             help="are coverage differences analyzed [default= %default]", metavar="character"),
-  make_option(c("-cu", "--cleanUp"), type="logical", default=FALSE,
+  make_option(c("-cu", "--cleanUp"), type="logical", default=FALSE,            ### NOTE: cleanUp set to FALSE by default
               help="remove temporary files [default= %default]", metavar="character"),
   make_option(c("-no", "--novoDir"), type="character", default='', 
               help="path to novoalign executable [default= %default]", metavar="character"),
