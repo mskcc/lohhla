@@ -637,8 +637,6 @@ if (all(n_hla_a, n_hla_b, n_hla_c) == 1) {
   quit()
 }
 
-if(length(grep('hla_c', x = hlaAlleles))== 1){
-
 if(length(hlaAlleles) == 0){
   stop('No suitable HLA alleles!')
 }
