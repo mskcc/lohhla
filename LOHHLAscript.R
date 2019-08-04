@@ -41,7 +41,7 @@ option_list = list(
               help="are plots made [default= %default]", metavar="character"),
   make_option(c("-cs", "--coverageStep"), type="logical", default=TRUE, 
             help="are coverage differences analyzed [default= %default]", metavar="character"),
-  make_option(c("-cu", "--cleanUp"), type="logical", default=FALSE,            ### NOTE: cleanUp set to FALSE by default
+  make_option(c("-cu", "--cleanUp"), type="logical", default=TRUE,            
               help="remove temporary files [default= %default]", metavar="character"),
   make_option(c("-no", "--novoDir"), type="character", default='', 
               help="path to novoalign executable [default= %default]", metavar="character"),
@@ -2152,12 +2152,12 @@ for (region in regions)
 
 
 
-HLAoutLoc <- paste(workDir, '/', full.patient,'.',minCoverageFilter,".DNA.HLAlossPrediction_CI.xls",sep="")
+HLAoutLoc <- paste(workDir, '/', full.patient,'.',minCoverageFilter,".DNA.HLAlossPrediction_CI.txt",sep="")
 write.table(PatientOutPut,file=HLAoutLoc,sep="\t",quote=FALSE,col.names=TRUE,row.names=FALSE)
 
 if(performIntegerCopyNum)
 {
-  HLABAFsummaryLoc <- paste(workDir, '/', full.patient,'.', minCoverageFilter,".DNA.IntegerCPN_CI.xls",sep="")
+  HLABAFsummaryLoc <- paste(workDir, '/', full.patient,'.', minCoverageFilter,".DNA.IntegerCPN_CI.txt",sep="")
   write.table(combinedTable,file=HLABAFsummaryLoc,sep="\t",quote=FALSE,col.names=TRUE,row.names=FALSE)
 }
 
