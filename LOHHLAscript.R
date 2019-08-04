@@ -613,26 +613,33 @@ if(!all(hlaAlleles %in% names(hlaFasta))) {
 
 # check for homozygous alleles here to save time on mapping step.
 # also figure out if hla names will be uniformly 'hla_x'
-if(length(grep('hla_a', x = hlaAlleles))== 1){
+n_hla_a = length(grep('hla_a', x = hlaAlleles))
+n_hla_b = length(grep('hla_b', x = hlaAlleles))
+n_hla_c = length(grep('hla_c', x = hlaAlleles))
+
+if(n_hla_a== 1){
   write.table(paste('\nHomozygous for HLA-A -- not going to see any LOH here.', '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
   hlaAlleles <- hlaAlleles[-grep('hla_a', x = hlaAlleles)]
 }
 
-if(length(grep('hla_b', x = hlaAlleles))== 1){
+if(n_hla_b== 1){
   write.table(paste('\nHomozygous for HLA-B -- not going to see any LOH here.', '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
   hlaAlleles <- hlaAlleles[-grep('hla_b', x = hlaAlleles)]
 }
 
-if(length(grep('hla_c', x = hlaAlleles))== 1){
+if(n_hla_c== 1){
   write.table(paste('\nHomozygous for HLA-C -- not going to see any LOH here.', '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
   hlaAlleles <- hlaAlleles[-grep('hla_c', x = hlaAlleles)]
+}
+
+if (all(n_hla_a, n_hla_b, n_hla_c) == 1) {
+  message('All HLA alleles are homozygous. No LOH analysis can be performed.')
+  quit()
 }
 
 if(length(hlaAlleles) == 0){
   stop('No suitable HLA alleles!')
 }
-
-
 
 if(mapping.step){
 
