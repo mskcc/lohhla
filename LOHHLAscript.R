@@ -638,11 +638,18 @@ if(n_hla_c== 1){
 
 if (all(n_hla_a, n_hla_b, n_hla_c) == 1) {
   message('All HLA alleles are homozygous. No LOH analysis can be performed.')
+  outputFilename = paste0(workDir, '/', full.patient,".All_HLA_alleles_homozygous.DNA.HLAlossPrediction_CI.txt")
+  fileMessage = paste0('All HLA alleles are homozygous. No LOH analysis can be performed.')
+  write.table(fileMessage,file=outputFilename,quote=FALSE,col.names=FALSE,row.names=FALSE)
   quit(status=0)
 }
 
+## I would be surprised if this conditional was hit, but we'll keep it in
 if(length(hlaAlleles) == 0){
   message('No suitable HLA alleles!')
+  outputFilename = paste0(workDir, '/', full.patient,"No_Suitable_HLA_alleles.DNA.HLAlossPrediction_CI.txt")
+  fileMessage = paste0('No suitable HLA alleles! No LOH analysis can be performed.')
+  write.table(fileMessage,file=outputFilename,quote=FALSE,col.names=FALSE,row.names=FALSE)
   quit(status=0)
 }
 
