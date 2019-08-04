@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 # before running
 # ml BEDTools/2.26.0-foss-2016b
 # ml SAMtools/1.3.1-foss-2016b
@@ -8,6 +10,7 @@
 
 ## rewritten to only take a normal BAM and tumor BAM, with no paths
 ## outputDir is the workDir
+
 
 library(optparse)
 option_list = list(
@@ -418,6 +421,7 @@ getMisMatchPositionsPairwiseAlignment <- function(alignment, chunksize=60, retur
 }
 
 
+## Original code
 ## 
 ## getUniqMapReads <- function(workDir
 ##                             ,BAMDir
@@ -634,11 +638,19 @@ if(n_hla_c== 1){
 
 if (all(n_hla_a, n_hla_b, n_hla_c) == 1) {
   message('All HLA alleles are homozygous. No LOH analysis can be performed.')
-  quit()
+  outputFilename = paste0(workDir, '/', full.patient,".All_HLA_alleles_homozygous.DNA.HLAlossPrediction_CI.txt")
+  fileMessage = paste0('All HLA alleles are homozygous. No LOH analysis can be performed.')
+  write.table(fileMessage,file=outputFilename,quote=FALSE,col.names=FALSE,row.names=FALSE)
+  quit(status=0)
 }
 
+## I would be surprised if this conditional was hit, but we'll keep it in
 if(length(hlaAlleles) == 0){
-  stop('No suitable HLA alleles!')
+  message('No suitable HLA alleles!')
+  outputFilename = paste0(workDir, '/', full.patient,"No_Suitable_HLA_alleles.DNA.HLAlossPrediction_CI.txt")
+  fileMessage = paste0('No suitable HLA alleles! No LOH analysis can be performed.')
+  write.table(fileMessage,file=outputFilename,quote=FALSE,col.names=FALSE,row.names=FALSE)
+  quit(status=0)
 }
 
 if(mapping.step){
@@ -1647,7 +1659,8 @@ for (region in regions)
       }
       if(!exists('regionSpecOutPut')){
         write.table(paste('\ncoverageStep did not run to completion for: ', HLA_gene, ' in ', region, '! ', '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
-        stop('coverageStep did not run to completion!')
+        message('ERROR: coverageStep did not run to completion!')
+        quit(status=0)
       }
 
 
