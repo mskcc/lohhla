@@ -1,3 +1,6 @@
+#!/usr/bin/env Rscript
+
+
 # before running
 # ml BEDTools/2.26.0-foss-2016b
 # ml SAMtools/1.3.1-foss-2016b
@@ -44,7 +47,7 @@ option_list = list(
               help="are plots made [default= %default]", metavar="character"),
   make_option(c("-cs", "--coverageStep"), type="logical", default=TRUE, 
             help="are coverage differences analyzed [default= %default]", metavar="character"),
-  make_option(c("-cu", "--cleanUp"), type="logical", default=FALSE,            ### NOTE: cleanUp set to FALSE by default
+  make_option(c("-cu", "--cleanUp"), type="logical", default=TRUE,        
               help="remove temporary files [default= %default]", metavar="character"),
   make_option(c("-no", "--novoDir"), type="character", default='', 
               help="path to novoalign executable [default= %default]", metavar="character"),
@@ -103,6 +106,12 @@ if (is.null(opt$tumorBAMfile) | is.null(opt$hlaPath) | is.null(opt$HLAfastaLoc))
   print_help(opt_parser)
   stop("Missing arguments.\n", call.=FALSE)  
 }
+
+
+## adding this in an attempt to stop bizarre plotting error
+### Error in is.data.frame(x) : object 'combinedTable' not found
+combinedTable = NULL
+
 
 
 
@@ -619,27 +628,44 @@ if(!all(hlaAlleles %in% names(hlaFasta))) {
   hlaAlleles <- hlaAlleles[which(hlaAlleles %in% names(hlaFasta))]
 }
 
+
 # check for homozygous alleles here to save time on mapping step.
 # also figure out if hla names will be uniformly 'hla_x'
-if(length(grep('hla_a', x = hlaAlleles))== 1){
+n_hla_a = length(grep('hla_a', x = hlaAlleles))
+n_hla_b = length(grep('hla_b', x = hlaAlleles))
+n_hla_c = length(grep('hla_c', x = hlaAlleles))
+
+if(n_hla_a== 1){
   write.table(paste('\nHomozygous for HLA-A -- not going to see any LOH here.', '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
   hlaAlleles <- hlaAlleles[-grep('hla_a', x = hlaAlleles)]
 }
 
-if(length(grep('hla_b', x = hlaAlleles))== 1){
+if(n_hla_b== 1){
   write.table(paste('\nHomozygous for HLA-B -- not going to see any LOH here.', '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
   hlaAlleles <- hlaAlleles[-grep('hla_b', x = hlaAlleles)]
 }
 
-if(length(grep('hla_c', x = hlaAlleles))== 1){
+if(n_hla_c== 1){
   write.table(paste('\nHomozygous for HLA-C -- not going to see any LOH here.', '\n', sep = ''), file = log.name, quote = FALSE, row.names = FALSE, col.names = FALSE, append = TRUE)
   hlaAlleles <- hlaAlleles[-grep('hla_c', x = hlaAlleles)]
 }
 
-if(length(hlaAlleles) == 0){
-  stop('No suitable HLA alleles!')
+if (all(n_hla_a, n_hla_b, n_hla_c) == 1) {
+  message('All HLA alleles are homozygous. No LOH analysis can be performed.')
+  outputFilename = paste0(workDir, '/', full.patient,".All_HLA_alleles_homozygous.DNA.HLAlossPrediction_CI.txt")
+  fileMessage = paste0('All HLA alleles are homozygous. No LOH analysis can be performed.')
+  write.table(fileMessage,file=outputFilename,quote=FALSE,col.names=FALSE,row.names=FALSE)
+  quit(status=0)
 }
 
+## I would be surprised if this conditional was hit, but we'll keep it in
+if(length(hlaAlleles) == 0){
+  message('No suitable HLA alleles!')
+  outputFilename = paste0(workDir, '/', full.patient,"No_Suitable_HLA_alleles.DNA.HLAlossPrediction_CI.txt")
+  fileMessage = paste0('No suitable HLA alleles! No LOH analysis can be performed.')
+  write.table(fileMessage,file=outputFilename,quote=FALSE,col.names=FALSE,row.names=FALSE)
+  quit(status=0)
+}
 
 
 if(mapping.step){
@@ -845,7 +871,7 @@ for (region in regions){
         type <- "tumor"
     }
     
-    print("this is the TYPE TYPE TYPE")
+    print("this is the TYPE")
     print(type)
 
 
@@ -1091,7 +1117,6 @@ for (region in regions)
           Type1NormalCmd <- paste("bedtools intersect -v -a ",workDir, '/', normalName,"/",normalName,".type.",HLA_A_type1,".filtered.bam"," -b ",workDir, '/', region,".",HLA_A_type1,".bed"," > ",workDir, '/', region,".",HLA_A_type1,".normal.NoMissMatch.bam",sep="")
           system(Type1NormalCmd)
         }
-        print("WE MAKE IT TO LINE 1230")
         Type2TumorCmd <- paste("bedtools intersect -v -a ",workDir, '/', region,"/",region, ".type.",HLA_A_type2,".filtered.bam"," -b ",workDir, '/', region,".",HLA_A_type2,".bed"," > ",workDir, '/', region,".",HLA_A_type2,".tumor.NoMissMatch.bam",sep="")
         system(Type2TumorCmd)
         if(runWithNormal){
@@ -1114,7 +1139,6 @@ for (region in regions)
           system(MpilupType2NormalCmd)
         }
 
-        print("WE MAKE IT TO LINE 1253")
         #get the coverage for the sites
         HLA_type1tumor_nomissmatch <- tryCatch(read.table(paste(workDir, '/', region,".",HLA_A_type1,".tumor.NoMissMatch.pileup",sep=""),stringsAsFactors=FALSE,fill=TRUE,quote="", sep = '\t'), error=function(e) NULL)
         HLA_type2tumor_nomissmatch <- tryCatch(read.table(paste(workDir, '/', region,".",HLA_A_type2,".tumor.NoMissMatch.pileup",sep=""),stringsAsFactors=FALSE,fill=TRUE,quote="", sep = '\t'), error=function(e) NULL)
@@ -2163,12 +2187,12 @@ for (region in regions)
 
 
 
-HLAoutLoc <- paste(workDir, '/', full.patient,'.',minCoverageFilter,".DNA.HLAlossPrediction_CI.xls",sep="")
+HLAoutLoc <- paste(workDir, '/', full.patient,'.',minCoverageFilter,".DNA.HLAlossPrediction_CI.txt",sep="")
 write.table(PatientOutPut,file=HLAoutLoc,sep="\t",quote=FALSE,col.names=TRUE,row.names=FALSE)
 
 if(performIntegerCopyNum)
 {
-  HLABAFsummaryLoc <- paste(workDir, '/', full.patient,'.', minCoverageFilter,".DNA.IntegerCPN_CI.xls",sep="")
+  HLABAFsummaryLoc <- paste(workDir, '/', full.patient,'.', minCoverageFilter,".DNA.IntegerCPN_CI.txt",sep="")
   write.table(combinedTable,file=HLABAFsummaryLoc,sep="\t",quote=FALSE,col.names=TRUE,row.names=FALSE)
 }
 
