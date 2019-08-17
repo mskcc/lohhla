@@ -100,13 +100,6 @@ ignoreWarnings    <- opt$ignoreWarnings
 
 
 
-## removed the necessity of a required workDir parameter set by user; use `getwd()` for Nextflow pipeline
-
-if (is.null(opt$tumorBAMfile) | is.null(opt$hlaPath) | is.null(opt$HLAfastaLoc)){
-  print_help(opt_parser)
-  stop("Missing arguments.\n", call.=FALSE)  
-}
-
 
 ## adding this in an attempt to stop bizarre plotting error
 ### Error in is.data.frame(x) : object 'combinedTable' not found
