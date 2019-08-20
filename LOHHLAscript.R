@@ -636,7 +636,7 @@ if(n_hla_c== 1){
   hlaAlleles <- hlaAlleles[-grep('hla_c', x = hlaAlleles)]
 }
 
-if (all(n_hla_a, n_hla_b, n_hla_c) == 1) {
+if (n_hla_a ==1 && n_hla_b == 1 && n_hla_c == 1) {
   message('All HLA alleles are homozygous. No LOH analysis can be performed.')
   outputFilename = paste0(workDir, '/', full.patient,".All_HLA_alleles_homozygous.DNA.HLAlossPrediction_CI.txt")
   fileMessage = paste0('All HLA alleles are homozygous. No LOH analysis can be performed.')
