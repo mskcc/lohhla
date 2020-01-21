@@ -1310,6 +1310,12 @@ for (region in regions)
       startChar <- min(c(as.numeric(names(HLA_A_type1tumorCov))),as.numeric(names(HLA_A_type2tumorCov)))
       endChar   <- max(c(as.numeric(names(HLA_A_type1tumorCov))),as.numeric(names(HLA_A_type2tumorCov)))
       seqToConsider <- seq(startChar,endChar,by=binSize)
+                                                  
+      # Decrease bin size if necessary
+      if (length(seqToConsider)==1) {
+        seqToConsider <- seq(startChar,endChar,by=binSize/3)
+      }
+
       seqToConsider <- c(seqToConsider[-length(seqToConsider)],endChar+1)
       
       binLogR       <- c()
