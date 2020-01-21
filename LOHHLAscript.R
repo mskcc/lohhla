@@ -1444,7 +1444,7 @@ for (region in regions)
   
       nA_rawVal_withoutBAF <- median(combinedTable$nAsep, na.rm = TRUE)
 
-      nA_rawVal_withoutBAF_conf <- t.test.NA(combinedTable$nAsep)
+      nA_rawVal_withoutBAF_conf <- tryCatch(t.test.NA(combinedTable$nAsep), error = function(e) NULL)
       nA_rawVal_withoutBAF_lower <- nA_rawVal_withoutBAF_conf$conf.int[1]
       nA_rawVal_withoutBAF_upper <- nA_rawVal_withoutBAF_conf$conf.int[2]
       
