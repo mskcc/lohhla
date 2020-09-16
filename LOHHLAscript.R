@@ -559,7 +559,7 @@ t.test.NA <- function(x){
     return(out)
   }
   else{
-    return(t.test(x))
+    return(tryCatch(t.test(x), error = function(e) NULL))
   }
 }
 
@@ -1005,7 +1005,7 @@ for (region in regions)
           HLA_A_type1normalLoc <- grep(pattern = HLA_A_type1, x = list.files(workDir, pattern = "normal.mpileup", full.names = TRUE), value = TRUE)
 
           if(runWithNormal){
-            HLA_A_type1normal <- read.table(HLA_A_type1normalLoc ,sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE)
+            HLA_A_type1normal <- tryCatch(read.table(HLA_A_type1normalLoc ,sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE), error=function(e) NULL)
           }
           if(!runWithNormal){
             HLA_A_type1normal <- data.frame(cbind(HLA_A_type1, 1:length(HLA_type1Fasta), toupper(HLA_type1Fasta), minCoverageFilter+1), stringsAsFactors=FALSE)
@@ -1016,7 +1016,7 @@ for (region in regions)
 
           ## HACK
           if (region != normalName){
-            HLA_A_type1tumor  <- read.table(paste(workDir, "/",region,".",HLA_A_type1,".","tumor.mpileup",sep=""),sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE)
+            HLA_A_type1tumor  <- tryCatch(read.table(paste(workDir, "/",region,".",HLA_A_type1,".","tumor.mpileup",sep=""),sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE), error=function(e) NULL)
           }
           rownames(HLA_A_type1tumor) <- HLA_A_type1tumor$V2
         
@@ -1040,7 +1040,7 @@ for (region in regions)
         {
           HLA_A_type2normalLoc <- grep(pattern = HLA_A_type2, x = list.files(workDir, pattern = "normal.mpileup", full.names = TRUE), value = TRUE)
           if(runWithNormal){
-            HLA_A_type2normal <- read.table(HLA_A_type2normalLoc ,sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE)
+            HLA_A_type2normal <- tryCatch(read.table(HLA_A_type2normalLoc ,sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE), error=function(e) NULL)
           }
           if(!runWithNormal){
             HLA_A_type2normal <- data.frame(cbind(HLA_A_type2, 1:length(HLA_type2Fasta), toupper(HLA_type2Fasta), minCoverageFilter+1), stringsAsFactors=FALSE)
@@ -1049,7 +1049,7 @@ for (region in regions)
           }
           rownames(HLA_A_type2normal) <- HLA_A_type2normal$V2
           if (region != normalName){
-            HLA_A_type2tumor  <- read.table(paste(workDir, "/",region,".",HLA_A_type2,".","tumor.mpileup",sep=""),sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE)
+            HLA_A_type2tumor  <- tryCatch(read.table(paste(workDir, "/",region,".",HLA_A_type2,".","tumor.mpileup",sep=""),sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE), error=function(e) NULL)
           }
           rownames(HLA_A_type2tumor) <- HLA_A_type2tumor$V2
        
@@ -1229,7 +1229,7 @@ for (region in regions)
         HLA_A_type1normalCov_mismatch        <- HLA_A_type1normalCov[names(HLA_A_type1normalCov)%in%missMatchPositions$diffSeq1]
         HLA_A_type1normalCov_mismatch_unique <- HLA_A_type1normalCov_mismatch
         if(runWithNormal){
-          HLA_A_type1normal_unique             <- read.table(paste(workDir, '/', region, '.', HLA_A_type1, '.normal.mismatch.unique.reads.bed', sep = ''), sep= '\t', header = TRUE, as.is = TRUE, comment.char = '')
+          HLA_A_type1normal_unique             <- tryCatch(read.table(paste(workDir, '/', region, '.', HLA_A_type1, '.normal.mismatch.unique.reads.bed', sep = ''), sep= '\t', header = TRUE, as.is = TRUE, comment.char = ''), error=function(e) NULL)
           HLA_A_type1normalCov_mismatch_unique <- sapply(X = names(HLA_A_type1normalCov_mismatch_unique), FUN = function(x) {return(table(HLA_A_type1normal_unique$V3)[x])} )  
           names(HLA_A_type1normalCov_mismatch_unique) <- names(HLA_A_type1normalCov_mismatch)
           HLA_A_type1normalCov_mismatch_unique[is.na(HLA_A_type1normalCov_mismatch_unique)] <- 0
@@ -1239,7 +1239,7 @@ for (region in regions)
         }
 
         HLA_A_type1tumorCov_mismatch        <- HLA_A_type1tumorCov[names(HLA_A_type1tumorCov)%in%missMatchPositions$diffSeq1]
-        HLA_A_type1tumor_unique             <- read.table(paste(workDir, '/', region, '.', HLA_A_type1, '.tumor.mismatch.unique.reads.bed', sep = ''), sep= '\t', header = TRUE, as.is = TRUE, comment.char = '')
+        HLA_A_type1tumor_unique             <- tryCatch(read.table(paste(workDir, '/', region, '.', HLA_A_type1, '.tumor.mismatch.unique.reads.bed', sep = ''), sep= '\t', header = TRUE, as.is = TRUE, comment.char = ''), error=function(e) NULL)
         HLA_A_type1tumorCov_mismatch_unique <- HLA_A_type1tumorCov_mismatch
         HLA_A_type1tumorCov_mismatch_unique <- sapply(X = names(HLA_A_type1tumorCov_mismatch_unique), FUN = function(x) {return(table(HLA_A_type1tumor_unique$V3)[x])} )  
         names(HLA_A_type1tumorCov_mismatch_unique) <- names(HLA_A_type1tumorCov_mismatch)
@@ -1251,7 +1251,7 @@ for (region in regions)
         HLA_A_type2normalCov_mismatch        <- HLA_A_type2normalCov[names(HLA_A_type2normalCov)%in%missMatchPositions$diffSeq2]
         HLA_A_type2normalCov_mismatch_unique <- HLA_A_type2normalCov_mismatch
         if(runWithNormal){
-          HLA_A_type2normal_unique             <- read.table(paste(workDir, '/', region, '.', HLA_A_type2, '.normal.mismatch.unique.reads.bed', sep = ''), sep= '\t', header = TRUE, as.is = TRUE, comment.char = '')
+          HLA_A_type2normal_unique             <- tryCatch(read.table(paste(workDir, '/', region, '.', HLA_A_type2, '.normal.mismatch.unique.reads.bed', sep = ''), sep= '\t', header = TRUE, as.is = TRUE, comment.char = ''), error=function(e) NULL)
           HLA_A_type2normalCov_mismatch_unique <- sapply(X = names(HLA_A_type2normalCov_mismatch_unique), FUN = function(x) {return(table(HLA_A_type2normal_unique$V3)[x])} )  
           names(HLA_A_type2normalCov_mismatch_unique) <- names(HLA_A_type2normalCov_mismatch)
           HLA_A_type2normalCov_mismatch_unique[is.na(HLA_A_type2normalCov_mismatch_unique)] <- 0
@@ -1261,7 +1261,7 @@ for (region in regions)
         }
 
         HLA_A_type2tumorCov_mismatch        <- HLA_A_type2tumorCov[names(HLA_A_type2tumorCov)%in%missMatchPositions$diffSeq2]
-        HLA_A_type2tumor_unique             <- read.table(paste(workDir, '/', region, '.', HLA_A_type2, '.tumor.mismatch.unique.reads.bed', sep = ''), sep= '\t', header = TRUE, as.is = TRUE, comment.char = '')
+        HLA_A_type2tumor_unique             <- tryCatch(read.table(paste(workDir, '/', region, '.', HLA_A_type2, '.tumor.mismatch.unique.reads.bed', sep = ''), sep= '\t', header = TRUE, as.is = TRUE, comment.char = ''), error=function(e) NULL)
         HLA_A_type2tumorCov_mismatch_unique <- HLA_A_type2tumorCov_mismatch
         HLA_A_type2tumorCov_mismatch_unique <- sapply(X = names(HLA_A_type2tumorCov_mismatch_unique), FUN = function(x) {return(table(HLA_A_type2tumor_unique$V3)[x])} )  
         names(HLA_A_type2tumorCov_mismatch_unique) <- names(HLA_A_type2tumorCov_mismatch)
@@ -1444,7 +1444,7 @@ for (region in regions)
   
       nA_rawVal_withoutBAF <- median(combinedTable$nAsep, na.rm = TRUE)
 
-      nA_rawVal_withoutBAF_conf <- tryCatch(t.test.NA(combinedTable$nAsep), error = function(e) NULL)
+      nA_rawVal_withoutBAF_conf <- t.test.NA(combinedTable$nAsep)
       nA_rawVal_withoutBAF_lower <- nA_rawVal_withoutBAF_conf$conf.int[1]
       nA_rawVal_withoutBAF_upper <- nA_rawVal_withoutBAF_conf$conf.int[2]
       
