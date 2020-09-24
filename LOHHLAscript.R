@@ -124,6 +124,7 @@ require(Biostrings, quietly = TRUE)
 require(beeswarm, quietly = TRUE)
 require(zoo, quietly = TRUE)
 require(Rsamtools, quietly = TRUE)
+require(plyr, quietly = TRUE)
 
 
 
@@ -1397,12 +1398,12 @@ for (region in regions)
       combinedTable$nBcombined <- rawVals[,2]
 
       nB_rawVal_withBAF        <- median(combinedTable$nBcombined, na.rm = TRUE)
-      nB_rawVal_withBAF_conf   <- t.test.NA(combinedTable$nBcombined)
+      nB_rawVal_withBAF_conf   <- tryCatch(t.test.NA(combinedTable$nBcombined), error = function(e) NULL)
       nB_rawVal_withBAF_lower  <- nB_rawVal_withBAF_conf$conf.int[1]
       nB_rawVal_withBAF_upper  <- nB_rawVal_withBAF_conf$conf.int[2]
       
       nA_rawVal_withBAF        <- median(combinedTable$nAcombined, na.rm = TRUE)
-      nA_rawVal_withBAF_conf   <- t.test.NA(combinedTable$nAcombined)
+      nA_rawVal_withBAF_conf   <- tryCatch(t.test.NA(combinedTable$nAcombined), error = function(e) NULL)
       nA_rawVal_withBAF_lower  <- nA_rawVal_withBAF_conf$conf.int[1]
       nA_rawVal_withBAF_upper  <- nA_rawVal_withBAF_conf$conf.int[2]
       
@@ -1411,23 +1412,23 @@ for (region in regions)
       combinedTable$nBcombinedBin <- rawValsBin[,2]
       
       nB_rawVal_withBAF           <- median(combinedTable$nBcombined, na.rm = TRUE)
-      nB_rawVal_withBAF_conf      <- t.test.NA(combinedTable$nBcombined)
+      nB_rawVal_withBAF_conf      <- tryCatch(t.test.NA(combinedTable$nBcombined), error = function(e) NULL)
       nB_rawVal_withBAF_lower     <- nB_rawVal_withBAF_conf$conf.int[1]
       nB_rawVal_withBAF_upper     <- nB_rawVal_withBAF_conf$conf.int[2]
       
       nA_rawVal_withBAF           <- median(combinedTable$nAcombined, na.rm = TRUE)
-      nA_rawVal_withBAF_conf      <- t.test.NA(combinedTable$nAcombined)
+      nA_rawVal_withBAF_conf      <- tryCatch(t.test.NA(combinedTable$nAcombined), error = function(e) NULL)
       nA_rawVal_withBAF_lower     <- nA_rawVal_withBAF_conf$conf.int[1]
       nA_rawVal_withBAF_upper     <- nA_rawVal_withBAF_conf$conf.int[2]
       
       #let's only count non duplicates
       nB_rawVal_withBAF_bin       <- median(combinedTable[!duplicated(combinedTable$binNum),]$nBcombinedBin, na.rm = TRUE)
-      nB_rawVal_withBAF_bin_conf  <- t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nBcombinedBin)
+      nB_rawVal_withBAF_bin_conf  <- tryCatch(t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nBcombinedBin), error = function(e) NULL)
       nB_rawVal_withBAF_bin_lower <-nB_rawVal_withBAF_bin_conf$conf.int[1]
       nB_rawVal_withBAF_bin_upper <-nB_rawVal_withBAF_bin_conf$conf.int[2]
       
       nA_rawVal_withBAF_bin       <- median(combinedTable[!duplicated(combinedTable$binNum),]$nAcombinedBin, na.rm = TRUE)
-      nA_rawVal_withBAF_bin_conf  <- t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nAcombinedBin)
+      nA_rawVal_withBAF_bin_conf  <- tryCatch(t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nAcombinedBin), error = function(e) NULL)
       nA_rawVal_withBAF_bin_lower <- nA_rawVal_withBAF_bin_conf$conf.int[1]
       nA_rawVal_withBAF_bin_upper <- nA_rawVal_withBAF_bin_conf$conf.int[2]
 
@@ -1438,7 +1439,7 @@ for (region in regions)
 
 
       nB_rawVal_withoutBAF <- median(combinedTable$nBsep, na.rm = TRUE)
-      nB_rawVal_withoutBAF_conf <- t.test.NA(combinedTable$nBsep)
+      nB_rawVal_withoutBAF_conf <- tryCatch(t.test.NA(combinedTable$nBsep), error = function(e) NULL)
       nB_rawVal_withoutBAF_lower <- nB_rawVal_withoutBAF_conf$conf.int[1]
       nB_rawVal_withoutBAF_upper <- nB_rawVal_withoutBAF_conf$conf.int[2]
   
@@ -1449,13 +1450,13 @@ for (region in regions)
       nA_rawVal_withoutBAF_upper <- nA_rawVal_withoutBAF_conf$conf.int[2]
       
       nB_rawVal_withoutBAFBin <-  median(combinedTable[!duplicated(combinedTable$binNum),]$nBsepBin, na.rm = TRUE)
-      nB_rawVal_withoutBAFBin_conf <-  t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nBsepBin)
+      nB_rawVal_withoutBAFBin_conf <- tryCatch(t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nBsepBin), error = function(e) NULL)
       nB_rawVal_withoutBAFBin_lower <- nB_rawVal_withoutBAFBin_conf$conf.int[1]
       nB_rawVal_withoutBAFBin_upper <- nB_rawVal_withoutBAFBin_conf$conf.int[2]
       
       
       nA_rawVal_withoutBAFBin <-  median(combinedTable[!duplicated(combinedTable$binNum),]$nAsepBin, na.rm = TRUE)
-      nA_rawVal_withoutBAFBin_conf <-  t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nAsepBin)
+      nA_rawVal_withoutBAFBin_conf <- tryCatch(t.test.NA(combinedTable[!duplicated(combinedTable$binNum),]$nAsepBin), error = function(e) NULL)
       nA_rawVal_withoutBAFBin_lower <- nA_rawVal_withoutBAFBin_conf$conf.int[1]
       nA_rawVal_withoutBAFBin_upper <- nA_rawVal_withoutBAFBin_conf$conf.int[2]
 
@@ -1490,8 +1491,8 @@ for (region in regions)
       tmpOut  <- tmpOut[!duplicated(tmpOut[,3]),,drop=FALSE]
       
       if(nrow(tmpOut) > 1){
-        PairedTtest <- t.test(tmpOut[,2],tmpOut[,4],paired=TRUE)
-        UnPairedTtest <- t.test(tmpOut[,2],tmpOut[,4],paired=FALSE)
+        PairedTtest <- tryCatch(t.test(tmpOut[,2],tmpOut[,4],paired=TRUE), error = function(e) NULL)
+        UnPairedTtest <- tryCatch(t.test(tmpOut[,2],tmpOut[,4],paired=FALSE), error = function(e) NULL)
       } else{
         PairedTtest <- list(p.value = NA)
         UnPairedTtest <- list(p.value = NA)
@@ -1499,7 +1500,7 @@ for (region in regions)
 
 
 
-      # t-test of mismatch sites without counting the same read twice      
+      # t-test of mismatch sites without counting the same read twice
       if(!any(c(length(HLA_A_type1tumorCov_mismatch_unique), length(HLA_A_type2tumorCov_mismatch_unique)) == 0)){
         
         tmpOut_unique <- cbind(missMatchseq1,log2(c(HLA_A_type1tumorCov_mismatch_unique/HLA_A_type1normalCov_mismatch_unique + 0.0001)*MultFactor)[as.character(missMatchseq1)],missMatchseq2,log2(c(HLA_A_type2tumorCov_mismatch_unique/HLA_A_type2normalCov_mismatch_unique+0.0001)*MultFactor)[as.character(missMatchseq2)])
@@ -1522,8 +1523,8 @@ for (region in regions)
         tmpOut_unique  <- tmpOut_unique[!duplicated(tmpOut_unique[,3]),,drop=FALSE]
         
         if(nrow(tmpOut_unique) > 1){
-          PairedTtest_unique <- t.test(tmpOut_unique[,2],tmpOut_unique[,4],paired=TRUE)
-          UnPairedTtest_unique <- t.test(tmpOut_unique[,2],tmpOut_unique[,4],paired=FALSE)
+          PairedTtest_unique <- tryCatch(t.test(tmpOut_unique[,2],tmpOut_unique[,4],paired=TRUE), error = function(e) NULL)
+          UnPairedTtest_unique <- tryCatch(t.test(tmpOut_unique[,2],tmpOut_unique[,4],paired=FALSE), error = function(e) NULL)
         } else{
           PairedTtest_unique <- list(p.value = NA)
           UnPairedTtest_unique <- list(p.value = NA)
@@ -1649,10 +1650,10 @@ for (region in regions)
                    ,HLA_type2copyNum_withBAFBin_lower
                    ,HLA_type2copyNum_withBAFBin_upper
                    ,PVal,UnPairedPval,PVal_unique,UnPairedPval_unique,LossAllele,KeptAllele,numMisMatchSitesCov,propSupportiveSites) 
-      HLAoutPut <- rbind(HLAoutPut,out)
+      HLAoutPut <- as.matrix(rbind.fill(data.frame(HLAoutPut),data.frame(out)))
 
       regionSpecOutPut <- cbind(region,HLAoutPut)
-      PatientOutPut    <- rbind(PatientOutPut,regionSpecOutPut)
+      PatientOutPut    <- as.matrix(rbind.fill(data.frame(PatientOutPut),data.frame(regionSpecOutPut)))
 
       # save some temporary files for plotting
       save.image(paste(figureDir, '/', region, '.', HLA_gene, '.tmp.data.plots.RData', sep = ''))
@@ -2073,7 +2074,7 @@ for (region in regions)
       
       
       
-      # t-test of mismatch sites without counting the same read twice      
+      # t-test of mismatch sites without counting the same read twice
       if(nrow(tmpOut_unique) > 0){
         if(runWithNormal){
           boxplot(tmpOut_unique[,2],tmpOut_unique[,4],col=c('#de2d2699','#3182bd99'),boxwex=0.2,ylim=c(-10,10),names=c(HLA_A_type1,HLA_A_type2),las=1,main=paste('Paired t.test p.val=',signif(PairedTtest_unique$p.value,3)),ylab=('"logR ratio"'))
@@ -2175,12 +2176,12 @@ for (region in regions)
           par(mar=c(5,5,5,2))
           
           if(length(HLA_type2tumor_nomissmatchCov) > 1 & length(HLA_A_type2normalCov[names(HLA_A_type2normalCov)%in%missMatchPositions$diffSeq2]) > 1){
-            Ttest <- t.test(log(c((HLA_type2tumor_nomissmatchCov+0.01)/HLA_type2normal_nomissmatchCov)*MultFactor,2),log(c((HLA_A_type2tumorCov+0.01)/HLA_A_type2normalCov)*MultFactor,2)[names(HLA_A_type2normalCov)%in%missMatchPositions$diffSeq2])
+            Ttest <- tryCatch(t.test(log(c((HLA_type2tumor_nomissmatchCov+0.01)/HLA_type2normal_nomissmatchCov)*MultFactor,2),log(c((HLA_A_type2tumorCov+0.01)/HLA_A_type2normalCov)*MultFactor,2)[names(HLA_A_type2normalCov)%in%missMatchPositions$diffSeq2]), error = function(e) NULL)
             boxplot(log(c((HLA_type2tumor_nomissmatchCov+0.01)/HLA_type2normal_nomissmatchCov)*MultFactor,2),log(c((HLA_A_type2tumorCov+0.01)/HLA_A_type2normalCov)*MultFactor,2)[names(HLA_A_type2normalCov)%in%missMatchPositions$diffSeq2],col=c('#de2d2699','#3182bd99'),boxwex=0.2,ylim=c(-2,2),names=c('No mismatch reads','Mismatch reads'),las=1,main=paste(HLA_A_type2,'\n t.test p.val=',signif(Ttest$p.value,3)),ylab=('logR ratio'),xlab='coverage from')
           }
           
           if(length(HLA_type1tumor_nomissmatchCov) > 1 & length(HLA_A_type1normalCov[names(HLA_A_type1normalCov)%in%missMatchPositions$diffSeq1]) > 1){
-            Ttest <- t.test(log(c((HLA_type1tumor_nomissmatchCov+0.01)/HLA_type1normal_nomissmatchCov)*MultFactor,2),log(c((HLA_A_type1tumorCov+0.01)/HLA_A_type1normalCov)*MultFactor,2)[names(HLA_A_type1normalCov)%in%missMatchPositions$diffSeq1])
+            Ttest <- tryCatch(t.test(log(c((HLA_type1tumor_nomissmatchCov+0.01)/HLA_type1normal_nomissmatchCov)*MultFactor,2),log(c((HLA_A_type1tumorCov+0.01)/HLA_A_type1normalCov)*MultFactor,2)[names(HLA_A_type1normalCov)%in%missMatchPositions$diffSeq1]), error = function(e) NULL)
             boxplot(log(c((HLA_type1tumor_nomissmatchCov+0.01)/HLA_type1normal_nomissmatchCov)*MultFactor,2),log(c((HLA_A_type1tumorCov+0.01)/HLA_A_type1normalCov)*MultFactor,2)[names(HLA_A_type1normalCov)%in%missMatchPositions$diffSeq1],col=c('#de2d2699','#3182bd99'),boxwex=0.2,ylim=c(-2,2),names=c('No mismatch reads','Mismatch reads'),las=1,main=paste(HLA_A_type1,'\n t.test p.val=',signif(Ttest$p.value,3)),ylab=('logR ratio'),xlab='coverage from')
           }   
         }
