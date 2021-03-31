@@ -10,7 +10,7 @@ using next-generation sequencing data.
 
 ### LICENCE ###
 
-THIS LOHHLA TOOL IS PROTECTED BY COPYRIGHT AND IS SUBJECT TO PATENT APPLICATION PCT/GB2018/052004.  THE TOOL IS PROVIDED “AS IS” FOR INTERNAL 
+THIS LOHHLA TOOL IS PROTECTED BY COPYRIGHT AND IS SUBJECT TO PATENT APPLICATION PCT/GB2018/052004.  THE TOOL IS PROVIDED ?AS IS? FOR INTERNAL 
 NON-COMMERCIAL ACADEMIC RESEARCH PURPOSES ONLY.  THIS LOHHLA TOOL IS PROVIDED TO YOU AS A PERSONAL COPY SUBJECT TO THESE TERMS AND YOU SHALL NOT 
 FORWARD OR PROVIDE A COPY OF THE LOHHLA TOOL TO ANY OTHER PERSON OR PARTY.   NO RESPONSIBILITY IS ACCEPTED FOR ANY LIABILITY ARISING FROM USE OF 
 THE LOHHLA TOOL OR ANY RESULTS ARISING THEREON BY YOU OR ANY THIRD PARTY.  COMMERCIAL USE OF THIS TOOL FOR ANY PURPOSE IS NOT PERMITTED.  
@@ -24,7 +24,7 @@ Please ensure a number of dependencies are first installed. These include:
 
 * BEDTools (http://bedtools.readthedocs.io/en/latest/)
 * SAMtools (http://samtools.sourceforge.net/)
-* Novalign (http://www.novocraft.com/products/novoalign/)
+* Novoalign (http://www.novocraft.com/products/novoalign/)
 * Picard (http://broadinstitute.github.io/picard/)
 * R (https://www.r-project.org/about.html)
 
