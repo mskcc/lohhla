@@ -1006,7 +1006,7 @@ for (region in regions)
           HLA_A_type1normalLoc <- grep(pattern = HLA_A_type1, x = list.files(workDir, pattern = "normal.mpileup", full.names = TRUE), value = TRUE)
 
           if(runWithNormal){
-            HLA_A_type1normal <- read.table(HLA_A_type1normalLoc ,sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE)
+            HLA_A_type1normal <- read.table(HLA_A_type1normalLoc ,sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE,comment.char="")
           }
           if(!runWithNormal){
             HLA_A_type1normal <- data.frame(cbind(HLA_A_type1, 1:length(HLA_type1Fasta), toupper(HLA_type1Fasta), minCoverageFilter+1), stringsAsFactors=FALSE)
@@ -1017,7 +1017,7 @@ for (region in regions)
 
           ## HACK
           if (region != normalName){
-            HLA_A_type1tumor  <- tryCatch(read.table(paste(workDir, "/",region,".",HLA_A_type1,".","tumor.mpileup",sep=""),sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE), error=function(e) NULL)
+            HLA_A_type1tumor  <- tryCatch(read.table(paste(workDir, "/",region,".",HLA_A_type1,".","tumor.mpileup",sep=""),sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE,comment.char=""), error=function(e) NULL)
           }
           rownames(HLA_A_type1tumor) <- HLA_A_type1tumor$V2
         
@@ -1041,7 +1041,7 @@ for (region in regions)
         {
           HLA_A_type2normalLoc <- grep(pattern = HLA_A_type2, x = list.files(workDir, pattern = "normal.mpileup", full.names = TRUE), value = TRUE)
           if(runWithNormal){
-            HLA_A_type2normal <- read.table(HLA_A_type2normalLoc ,sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE)
+            HLA_A_type2normal <- read.table(HLA_A_type2normalLoc ,sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE,comment.char="")
           }
           if(!runWithNormal){
             HLA_A_type2normal <- data.frame(cbind(HLA_A_type2, 1:length(HLA_type2Fasta), toupper(HLA_type2Fasta), minCoverageFilter+1), stringsAsFactors=FALSE)
@@ -1050,7 +1050,7 @@ for (region in regions)
           }
           rownames(HLA_A_type2normal) <- HLA_A_type2normal$V2
           if (region != normalName){
-            HLA_A_type2tumor  <- tryCatch(read.table(paste(workDir, "/",region,".",HLA_A_type2,".","tumor.mpileup",sep=""),sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE), error=function(e) NULL)
+            HLA_A_type2tumor  <- tryCatch(read.table(paste(workDir, "/",region,".",HLA_A_type2,".","tumor.mpileup",sep=""),sep="\t",stringsAsFactors=FALSE,quote="",fill=TRUE,comment.char=""), error=function(e) NULL)
           }
           rownames(HLA_A_type2tumor) <- HLA_A_type2tumor$V2
        
